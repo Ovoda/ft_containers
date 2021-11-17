@@ -43,13 +43,13 @@ class vector {
     for (iterator i = first; i != last; i++) push_back(*i);
   }
 
-  // vector(const vector& x) {}
+  vector(const vector& src) { *this = src; }
 
   iterator begin() { return iterator(&_array[0]); }
-  const_iterator begin() const { return iterator(&_array[0]); }
+  const_iterator begin() const { return const_iterator(&_array[0]); }
 
   iterator end() { return iterator(&_array[_size]); }
-  const_iterator end() const { return iterator(&_array[_size]); }
+  const_iterator end() const { return const_iterator(&_array[_size]); }
 
   //         reverse_iterator rbegin();
   // const_reverse_iterator rbegin() const;
@@ -68,7 +68,7 @@ class vector {
   bool empty() const { return (_size == 0); }
 
   void reserve(size_type n) {
-    if (n > _capacity) {
+    if (n >= _capacity) {
       vector<value_type> tmp(*this);
 
       if (_capacity > 0) {
@@ -86,6 +86,22 @@ class vector {
         }
       }
     }
+  }
+
+  vector& operator=(const vector& x) {
+    if (this != &x) {
+      if (_capacity > 0) {
+        clear();
+        _alloc.deallocate(_array, _capacity);
+      }
+      _size = x.size();
+      _capacity = x.capacity();
+      _array = _alloc.allocate(_capacity);
+      for (unsigned int i = 0; i < _size; i++) {
+        _alloc.construct(&_array[i], x._array[i]);
+      }
+    }
+    return *this;
   }
 
   reference operator[](size_type index) { return (_array[index]); }
@@ -125,7 +141,12 @@ class vector {
     _capacity = tmp_capacity;
   }
 
-  void clear() { _size = 0; }
+  void clear() {
+    for (iterator it = begin(); it != end(); ++it) {
+      _alloc.destroy(&(*it));
+    }
+    _size = 0;
+  }
 
   void assign(size_type n, value_type const val) {
     vector<value_type> x(n, val);

@@ -14,9 +14,30 @@ int main() {
   // }
   // std::cout << std::endl;
 
-  ft::vector<int> ok2;
-  ok2.push_back(0);
-  ok2.push_back(1);
-  ok2.push_back(2);
+  ft::vector<int> ori;
+  ori.push_back(0);
+  ori.push_back(1);
+  ori.push_back(2);
+
+  ft::vector<int> ori2;
+  ori2.push_back(2);
+  ori2.push_back(1);
+  ori2.push_back(0);
+
+  ft::vector<int> copy;
+
+  copy = ori;
+  std::cout << copy[0] << std::endl;
+  std::cout << copy[1] << std::endl;
+  std::cout << copy[2] << std::endl;
+
+  copy = ori2;
+  std::cout << copy[0] << std::endl;
+  std::cout << copy[1] << std::endl;
+  std::cout << copy[2] << std::endl;
+
+  // for (ft::vector<int>::iterator it = copy.begin(); it != copy.end(); it++) {
+  //   std::cout << *it << std::endl;
+  // }
   return 0;
 }
