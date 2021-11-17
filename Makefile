@@ -1,6 +1,6 @@
 NAME	= exec
 
-CC		= clang++
+CC		= clang++ -fsanitize=address -g
 RM		= rm -rf
 
 SRCS_PATH	= ./

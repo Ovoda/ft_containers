@@ -93,12 +93,14 @@ class random_access_iterator : public iterator<random_access_iterator_tag, T> {
     return tmp;
   }
 
-  value_type operator*() { return *_ptr; }
+  reference operator*() { return *_ptr; }
   bool operator==(random_access_iterator const& rhs) const {
     return (this->_ptr == rhs._ptr);
   }
 
   bool operator!=(random_access_iterator const& rhs) const {
+    // std::cout << "it : " << _ptr << std::endl;
+    // std::cout << "end: " << rhs._ptr << std::endl;
     return (this->_ptr != rhs._ptr);
   }
 

@@ -27,19 +27,19 @@ class vector {
   typedef ptrdiff_t difference_type;
   typedef size_t size_type;
 
-  explicit vector(const allocator_type& alloc = allocator_type())
-      : _size(0), _capacity(0) {}
+  explicit vector() : _size(0), _capacity(0), _array(nullptr) {}
 
   explicit vector(size_type n, const value_type& val = value_type(),
                   const allocator_type& alloc = allocator_type())
-      : _size(0), _capacity(0) {
+      : _size(0), _capacity(0), _array(nullptr) {
     for (size_type i = 0; i < n; i++) push_back(val);
   }
 
   template <class InputIterator>
   vector(InputIterator first,
          typename ft::enable_if<!ft::is_integral<InputIterator>::value,
-                                InputIterator>::type last) {
+                                InputIterator>::type last)
+      : _size(0), _capacity(0), _array(nullptr) {
     for (iterator i = first; i != last; i++) push_back(*i);
   }
 
@@ -71,10 +71,20 @@ class vector {
     if (n > _capacity) {
       vector<value_type> tmp(*this);
 
-      _alloc.deallocate(_array, _capacity);
+      if (_capacity > 0) {
+        for (iterator it = tmp.begin(); it != tmp.end(); ++it) {
+          _alloc.destroy(&(*it));
+        }
+        _alloc.deallocate(_array, _capacity);
+      }
       _array = _alloc.allocate(n);
       _capacity = n;
-      for (iterator it = tmp.begin(); it != tmp.end(); ++it) push_back(*it);
+      if (_size > 0) {
+        _size = 0;
+        for (iterator it = tmp.begin(); it != tmp.end(); ++it) {
+          _alloc.construct(&_array[_size++], *it);
+        }
+      }
     }
   }
 
@@ -91,9 +101,12 @@ class vector {
   const_reference back() const { return _array[_size - 1]; }
 
   void push_back(value_type const& val) {
-    if (_size >= _capacity)
+    static int i = 0;
+    if (_size >= _capacity) {
       _capacity <= 0 ? reserve(1) : reserve(_capacity *= 2);
+    }
     _alloc.construct(&_array[_size++], val);
+    i++;
   }
 
   void pop_back() { _size--; }
@@ -140,7 +153,6 @@ std::ostream& operator<<(std::ostream& o, ft::vector<T>& vect) {
   }
   return o;
 }
-
 };  // namespace ft
 
 #endif
