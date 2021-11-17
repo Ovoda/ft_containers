@@ -1,7 +1,16 @@
 NAME	= exec
 
-CC		= clang++ -fsanitize=address -g
 RM		= rm -rf
+
+CCFLAGS = 
+
+UNAME_S := $(shell uname -s)
+ifeq ($(UNAME_S),Linux)
+	CCFLAGS += g++ -g
+endif
+ifeq ($(UNAME_S),Darwin)
+	CCFLAGS += clang++ -fsanitize=address
+endif
 
 SRCS_PATH	= ./
 OBJS_PATH	= objs/
@@ -11,12 +20,12 @@ OBJS		= $(addprefix $(OBJS_PATH),$(SRCS:.cpp=.o))
 
 $(OBJS_PATH)%.o: $(SRCS_PATH)%.cpp
 	@ mkdir -p $(OBJS_PATH)
-	$(CC) $(INC) -c $< -o $@
+	$(CCFLAGS) $(INC) -c $< -o $@
 
 all: $(NAME)
 
 $(NAME): $(OBJS)
-	$(CC) $(OBJS) $(INC) -o $(NAME)
+	$(CCFLAGS) $(OBJS) $(INC) -o $(NAME)
 
 clean: 
 	$(RM) $(OBJS) $(OBJS_PATH)
