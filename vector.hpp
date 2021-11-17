@@ -43,7 +43,16 @@ class vector {
     for (iterator i = first; i != last; i++) push_back(*i);
   }
 
-  vector(const vector& src) { *this = src; }
+  vector(const vector& src) : _size(0), _capacity(0), _array(nullptr) {
+    *this = src;
+  }
+
+  ~vector() {
+    if (_capacity > 0) {
+      clear();
+      _alloc.deallocate(_array, _capacity);
+    }
+  }
 
   iterator begin() { return iterator(&_array[0]); }
   const_iterator begin() const { return const_iterator(&_array[0]); }
