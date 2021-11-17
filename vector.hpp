@@ -100,7 +100,9 @@ class vector {
       }
       _size = 0;
       _capacity = x.capacity();
-      _array = _alloc.allocate(_capacity);
+      if (_capacity > 0) {
+        _array = _alloc.allocate(_capacity);
+      }
       for (const_iterator it = x.begin(); it != x.end(); ++it) {
         _alloc.construct(&_array[_size++], *it);
       }
