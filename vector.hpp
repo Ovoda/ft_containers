@@ -81,18 +81,13 @@ class vector {
       vector<value_type> tmp(*this);
 
       if (_capacity > 0) {
-        for (iterator it = tmp.begin(); it != tmp.end(); ++it) {
-          _alloc.destroy(&(*it));
-        }
+        clear();
         _alloc.deallocate(_array, _capacity);
       }
       _array = _alloc.allocate(n);
       _capacity = n;
-      if (_size > 0) {
-        _size = 0;
-        for (iterator it = tmp.begin(); it != tmp.end(); ++it) {
-          _alloc.construct(&_array[_size++], *it);
-        }
+      for (iterator it = tmp.begin(); it != tmp.end(); ++it) {
+        _alloc.construct(&_array[_size++], *it);
       }
     }
   }
