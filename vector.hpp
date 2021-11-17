@@ -98,11 +98,11 @@ class vector {
         clear();
         _alloc.deallocate(_array, _capacity);
       }
-      _size = x.size();
+      _size = 0;
       _capacity = x.capacity();
       _array = _alloc.allocate(_capacity);
-      for (unsigned int i = 0; i < _size; i++) {
-        _alloc.construct(&_array[i], x._array[i]);
+      for (const_iterator it = x.begin(); it != x.end(); ++it) {
+        _alloc.construct(&_array[_size++], *it);
       }
     }
     return *this;
