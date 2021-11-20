@@ -34,34 +34,27 @@ template <class T>
 struct iterator_traits<const T*> {
   typedef std::ptrdiff_t difference_type;
   typedef T value_type;
-  typedef T* pointer;
-  typedef T& reference;
+  typedef const T* pointer;
+  typedef const T& reference;
   typedef ft::random_access_iterator_tag iterator_category;
 };
 
-template <class Categorie, class T, class Distance = std::ptrdiff_t,
-          class Pointer = T*, class Reference = T&>
-struct iterator {
-  typedef T value_type;
-  typedef Pointer pointer;
-  typedef Reference reference;
-  typedef Distance difference_type;
-  typedef Categorie iterator_category;
-};
-
 template <class T>
-class random_access_iterator : public iterator<random_access_iterator_tag, T> {
+class random_access_iterator {
  public:
   /// Typedefs
-  using typename iterator<random_access_iterator_tag, T>::value_type;
-  using typename iterator<random_access_iterator_tag, T>::pointer;
-  using typename iterator<random_access_iterator_tag, T>::reference;
-  using typename iterator<random_access_iterator_tag, T>::difference_type;
-  using typename iterator<random_access_iterator_tag, T>::iterator_category;
+  typedef typename iterator_traits<T*>::value_type value_type;
+  typedef typename iterator_traits<T*>::pointer pointer;
+  typedef typename iterator_traits<T*>::reference reference;
+  typedef typename iterator_traits<T*>::difference_type difference_type;
+  typedef typename iterator_traits<T*>::iterator_category iterator_category;
 
   /// Constructers and destructor
   random_access_iterator() {}
-  random_access_iterator(random_access_iterator const& src) { *this = src; }
+  template <class iterator>
+  random_access_iterator(iterator const& src) : _ptr(nullptr) {
+    *this = src;
+  }
   random_access_iterator(pointer ptr) : _ptr(ptr) {}
   ~random_access_iterator() {}
 
@@ -71,6 +64,8 @@ class random_access_iterator : public iterator<random_access_iterator_tag, T> {
   //   return *this;
   // }
 
+  pointer& ptr() { return _ptr; }
+
   random_access_iterator& operator++() {
     _ptr++;
     return *this;
@@ -78,7 +73,7 @@ class random_access_iterator : public iterator<random_access_iterator_tag, T> {
 
   random_access_iterator operator++(int) {
     random_access_iterator tmp = *this;
-    operator++();
+    ++_ptr;
     return tmp;
   }
 
@@ -94,15 +89,6 @@ class random_access_iterator : public iterator<random_access_iterator_tag, T> {
   }
 
   reference operator*() { return *_ptr; }
-  bool operator==(random_access_iterator const& rhs) const {
-    return (this->_ptr == rhs._ptr);
-  }
-
-  bool operator!=(random_access_iterator const& rhs) const {
-    // std::cout << "it : " << _ptr << std::endl;
-    // std::cout << "end: " << rhs._ptr << std::endl;
-    return (this->_ptr != rhs._ptr);
-  }
 
   bool operator>(random_access_iterator const& rhs) const {
     return (this->_ptr > rhs._ptr);
@@ -137,21 +123,30 @@ class random_access_iterator : public iterator<random_access_iterator_tag, T> {
     return (_ptr[index]);
   }
 
-  random_access_iterator operator-(
+  random_access_iterator& operator-(
       typename random_access_iterator::difference_type amount) {
     _ptr -= amount;
     return *this;
   }
 
+  bool operator==(const random_access_iterator& rhs) const {
+    return _ptr == rhs._ptr;
+  };
+
   typename random_access_iterator::difference_type operator-(
-      random_access_iterator& rhs) {
+      const random_access_iterator& rhs) {
     return (_ptr - rhs._ptr);
   }
 
-  random_access_iterator operator+(
+  random_access_iterator& operator+(
       typename random_access_iterator::difference_type amount) {
     _ptr += amount;
     return *this;
+  }
+
+  friend bool operator!=(random_access_iterator const& rhs,
+                         random_access_iterator const& lhs) {
+    return (rhs._ptr != lhs._ptr);
   }
 
  private:
@@ -163,6 +158,11 @@ Iterator& operator+(typename Iterator::difference_type amount, Iterator& src) {
   src += amount;
   return (src);
 }
+
+// template <class iterator, class iterator2>
+// bool operator==(const iterator& rhs, const iterator2& lhs) {
+//   return (rhs.ptr() == lhs.ptr());
+// }
 
 template <class Iterator, class Distance>
 void advance(Iterator& it, Distance n) {

@@ -9,7 +9,7 @@ ifeq ($(UNAME_S),Linux)
 	CCFLAGS += g++ -g
 endif
 ifeq ($(UNAME_S),Darwin)
-	CCFLAGS += clang++ -fsanitize=address
+	CCFLAGS += clang++ -fsanitize=address -g -D TESTED_NAMESPACE=ft
 endif
 
 SRCS_PATH	= ./

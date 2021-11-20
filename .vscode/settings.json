@@ -63,6 +63,13 @@
         "vector": "cpp",
         "memory_resource": "cpp",
         "version": "cpp",
-        "__memory": "cpp"
+        "__memory": "cpp",
+        "__tree": "cpp",
+        "deque": "cpp",
+        "list": "cpp",
+        "map": "cpp",
+        "queue": "cpp",
+        "set": "cpp",
+        "stack": "cpp"
     }
 }

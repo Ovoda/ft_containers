@@ -27,11 +27,10 @@ class vector {
   typedef ptrdiff_t difference_type;
   typedef size_t size_type;
 
-  explicit vector() : _size(0), _capacity(0), _array(nullptr) {}
+  explicit vector() : _array(nullptr), _size(0), _capacity(0) {}
 
-  explicit vector(size_type n, const value_type& val = value_type(),
-                  const allocator_type& alloc = allocator_type())
-      : _size(0), _capacity(0), _array(nullptr) {
+  explicit vector(size_type n, const value_type& val = value_type())
+      : _array(nullptr), _size(0), _capacity(0) {
     for (size_type i = 0; i < n; i++) push_back(val);
   }
 
@@ -39,11 +38,11 @@ class vector {
   vector(InputIterator first,
          typename ft::enable_if<!ft::is_integral<InputIterator>::value,
                                 InputIterator>::type last)
-      : _size(0), _capacity(0), _array(nullptr) {
+      : _array(nullptr), _size(0), _capacity(0) {
     for (iterator i = first; i != last; i++) push_back(*i);
   }
 
-  vector(const vector& src) : _size(0), _capacity(0), _array(nullptr) {
+  vector(const vector& src) : _array(nullptr), _size(0), _capacity(0) {
     *this = src;
   }
 
@@ -122,6 +121,13 @@ class vector {
   reference back() { return _array[_size - 1]; }
   const_reference back() const { return _array[_size - 1]; }
 
+  /// Vector Modifiers
+
+  void assign(size_type n, value_type const val) {
+    vector<value_type> x(n, val);
+    swap(x);
+  }
+
   void push_back(value_type const& val) {
     static int i = 0;
     if (_size >= _capacity) {
@@ -131,7 +137,22 @@ class vector {
     i++;
   }
 
-  void pop_back() { _size--; }
+  void pop_back() { _alloc.destroy(&_array[_size-- - 1]); }
+
+  // iterator insert(iterator position, const value_type& val) {
+  //   if (_size + 1 > _capacity) {
+  //   }
+  // }
+
+  // void insert(iterator position, size_type n, const value_type& val) {
+  //   reserve(_size + n);
+  //   iterator end = end();
+  //   for (iterator it = begin() + n; it != position + n; it++) {
+  //   }
+  // }
+
+  // template <class InputIterator>
+  // void insert(iterator position, InputIterator first, InputIterator last);
 
   void swap(vector& x) {
     pointer tmp_array = _array;
@@ -154,11 +175,6 @@ class vector {
     _size = 0;
   }
 
-  void assign(size_type n, value_type const val) {
-    vector<value_type> x(n, val);
-    swap(x);
-  }
-
   template <class Iterator>
   void assign(Iterator first, Iterator last) {
     vector<value_type> x(first, last);
@@ -167,8 +183,8 @@ class vector {
 
  private:
   pointer _array;
-  size_type _capacity;
   size_type _size;
+  size_type _capacity;
   allocator_type _alloc;
   iterator _iterator;
 };
