@@ -51,10 +51,11 @@ class random_access_iterator {
 
   /// Constructers and destructor
   random_access_iterator() {}
-  template <class iterator>
-  random_access_iterator(iterator const& src) : _ptr(nullptr) {
-    *this = src;
-  }
+  explicit random_access_iterator(random_access_iterator const& src)
+      : _ptr(src._ptr) {}
+  template <class it>
+  random_access_iterator(random_access_iterator<it> const& src)
+      : _ptr(src.ptr()) {}
   random_access_iterator(pointer ptr) : _ptr(ptr) {}
   ~random_access_iterator() {}
 
@@ -64,7 +65,7 @@ class random_access_iterator {
   //   return *this;
   // }
 
-  pointer& ptr() { return _ptr; }
+  pointer ptr() const { return _ptr; }
 
   random_access_iterator& operator++() {
     _ptr++;
