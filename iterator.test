@@ -1,0 +1,24 @@
+#include <iostream>
+
+template <class T>
+class Iterator {
+ public:
+  typedef T* pointer;
+  Iterator(pointer ptr) : _ptr(ptr) {}
+  template <class U>
+  Iterator(Iterator<U> const& src) : _ptr(src._ptr) {}
+
+  T operator*() { return (*_ptr); }
+
+  pointer _ptr;
+};
+
+int main(void) {
+  int a = 1;
+  Iterator<int> ite1(&a);
+  Iterator<const int> ite2(ite1);
+
+  std::cout << "value 1: " << *ite1 << std::endl;
+  std::cout << "value 2: " << *ite2 << std::endl;
+  return (0);
+}
