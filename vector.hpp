@@ -236,7 +236,7 @@ std::ostream& operator<<(std::ostream& o, ft::vector<T>& vect) {
 template <class T>
 bool operator==(const vector<T>& lhs, const vector<T>& rhs) {
   if (lhs.size() == rhs.size()) {
-    return (std::equal(lhs.begin(), lhs.end(), rhs.begin()));
+    return (ft::equal(lhs.begin(), lhs.end(), rhs.begin()));
   }
   return (false);
 }
@@ -249,7 +249,7 @@ bool operator!=(const vector<T>& lhs, const vector<T>& rhs) {
 template <class T>
 bool operator<(const vector<T>& lhs, const vector<T>& rhs) {
   return (
-      lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), lhs.end()));
+      lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end()));
 }
 
 template <class T>
@@ -259,12 +259,12 @@ bool operator>(const vector<T>& lhs, const vector<T>& rhs) {
 
 template <class T>
 bool operator<=(const vector<T>& lhs, const vector<T>& rhs) {
-  return (!(lhs < rhs));
+  return (!(lhs > rhs));
 }
 
 template <class T>
 bool operator>=(const vector<T>& lhs, const vector<T>& rhs) {
-  return (!(lhs > rhs));
+  return (!(lhs < rhs));
 }
 
 };  // namespace ft

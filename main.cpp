@@ -171,6 +171,11 @@ void comparaison_tool_test() {
   v2.push_back(std::string("HELlO"));
   v2.push_back(std::string("GOOD MORNING"));
 
+  typedef
+      typename ft::iterator_traits<typename vector::iterator>::value_type __v2;
+
+  std::cout << typeid(__v2).name() << std::endl;
+
   std::cout << std::boolalpha
             << (ft::equal(v.begin(), v.end(), v2.begin(),
                           compare_string_nocase))
@@ -181,11 +186,29 @@ void comparaison_tool_test() {
             << std::endl;
 }
 
+template <class vector>
+void relational_ope_test(vector lhs, vector rhs) {
+  std::cout << "eq: " << (lhs == rhs) << " | ne: " << (lhs != rhs) << std::endl;
+  std::cout << "lt: " << (lhs < rhs) << " | le: " << (lhs <= rhs) << std::endl;
+  std::cout << "gt: " << (lhs > rhs) << " | ge: " << (lhs >= rhs) << std::endl
+            << std::endl;
+}
+
 int main() {
-  comparaison_tool_test<ft::vector<std::string> >();
-  comparaison_tool_test<std::vector<std::string> >();
-  // comparaison_tool_test<ft::vector<std::string> >();
-  // std::cout << std::endl;
-  // comparaison_tool_test<ft::vector<int> >();
-  // std::cout << std::endl;
+  ft::vector<int> v;
+  v.push_back(0);
+  v.push_back(1);
+  v.push_back(2);
+  v.push_back(3);
+  v.push_back(4);
+  relational_ope_test<ft::vector<int> >(v, v);
+
+  std::vector<int> v2;
+  v2.push_back(0);
+  v2.push_back(1);
+  v2.push_back(2);
+  v2.push_back(3);
+  v2.push_back(4);
+  relational_ope_test<std::vector<int> >(v2, v2);
+  return (0);
 }
