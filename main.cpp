@@ -195,9 +195,13 @@ void relational_ope_test(vector lhs, vector rhs) {
 }
 
 int main() {
-  ft::vector<int> v(4, 42);
-  ft::vector<int>::iterator it = v.insert(++v.begin(), 43);
+  ft::vector<int> v;
+  v.push_back(0);
+  v.push_back(1);
+  v.push_back(2);
+  v.push_back(3);
+  ft::vector<int>::iterator it = v.begin() + 1;
+  v.insert(it, v.begin(), v.end());
   std::cout << v << std::endl;
-  std::cout << *it << std::endl;
   return (0);
 }

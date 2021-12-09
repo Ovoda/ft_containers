@@ -188,8 +188,23 @@ class vector {
     }
   }
 
-  // template <class InputIterator>
-  // void insert(iterator position, InputIterator first, InputIterator last);
+  template <class InputIterator>
+  void insert(
+      iterator position, InputIterator first, InputIterator last,
+      typename ft::enable_if<!ft::is_integral<InputIterator>::value>::type* =
+          0) {
+    vector<T> tmp;
+    for (iterator tmp_it = begin(); tmp_it != position; tmp_it++) {
+      tmp.push_back(*tmp_it);
+    }
+    for (; first != last; ++first) {
+      tmp.push_back(*first);
+    }
+    for (iterator tmp_it = position; tmp_it != end(); tmp_it++) {
+      tmp.push_back(*tmp_it);
+    }
+    *this = tmp;
+  }
 
   void swap(vector& x) {
     pointer tmp_array = _array;
