@@ -42,7 +42,7 @@ class vector {
          typename ft::enable_if<!ft::is_integral<InputIterator>::value,
                                 InputIterator>::type last)
       : _array(nullptr), _size(0), _capacity(0) {
-    for (iterator i = first; i != last; i++) push_back(*i);
+    for (InputIterator i = first; i != last; i++) push_back(*i);
   }
 
   vector(const vector& src) : _array(nullptr), _size(0), _capacity(0) {
@@ -180,7 +180,7 @@ class vector {
       tmp.push_back(*tmp_it);
     }
     resize(position - begin());
-    for (int i = 0; i < n; i++) {
+    for (size_type i = 0; i < n; i++) {
       push_back(val);
     }
     for (iterator tmp_it = tmp.begin(); tmp_it != tmp.end(); tmp_it++) {
@@ -204,6 +204,19 @@ class vector {
       tmp.push_back(*tmp_it);
     }
     *this = tmp;
+  }
+
+  iterator erase(iterator position) { return (erase(position, position + 1)); }
+
+  iterator erase(iterator first, iterator last) {
+    difference_type distance = last - first;
+    iterator ret = last - distance;
+    for (; &(*(first + distance)) != &(*end()); ++first) {
+      *first = *(first + distance);
+    }
+    _size -= distance;
+    std::cout << *this << std::endl;
+    return (ret);
   }
 
   void swap(vector& x) {

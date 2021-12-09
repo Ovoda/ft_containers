@@ -134,13 +134,11 @@ class random_access_iterator : public iterator<T> {
   }
 
   random_access_iterator operator-(const difference_type n) {
-    _ptr -= n;
-    return (*this);
+    return (random_access_iterator(_ptr - n));
   }
 
   random_access_iterator operator+(const difference_type n) {
-    _ptr += n;
-    return (*this);
+    return (random_access_iterator(_ptr + n));
   }
 
   difference_type operator-(const random_access_iterator& rhs) {

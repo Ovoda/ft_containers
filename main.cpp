@@ -194,14 +194,47 @@ void relational_ope_test(vector lhs, vector rhs) {
             << std::endl;
 }
 
-int main() {
-  ft::vector<int> v;
-  v.push_back(0);
-  v.push_back(1);
-  v.push_back(2);
-  v.push_back(3);
-  ft::vector<int>::iterator it = v.begin() + 1;
-  v.insert(it, v.begin(), v.end());
-  std::cout << v << std::endl;
+template <class vector>
+void checkErase(vector const &vct, typename vector::const_iterator const &it) {
+  static int i = 0;
+  std::cout << "[" << i++ << "] "
+            << "erase: " << it - vct.begin() << std::endl;
+}
+
+template <class vector>
+int test_erase(void) {
+  vector vct(10);
+
+  for (unsigned long int i = 0; i < vct.size(); ++i)
+    vct[i] = std::string((vct.size() - i), i + 65);
+
+  checkErase(vct, vct.erase(vct.begin() + 2));
+  // for (typename vector::iterator it = vct.begin(); it != vct.end(); it++) {
+  //   std::cout << *it << std::endl;
+  // }
+
+  checkErase(vct, vct.erase(vct.begin()));
+  checkErase(vct, vct.erase(vct.end() - 1));
+
+  // checkErase(vct, vct.erase(vct.begin(), vct.begin() + 3));
+  // checkErase(vct, vct.erase(vct.end() - 3, vct.end() - 1));
+
+  // vct.push_back("Hello");
+  // vct.push_back("Hi there");
+  // checkErase(vct, vct.erase(vct.end() - 3, vct.end()));
+
+  // vct.push_back("ONE");
+  // vct.push_back("TWO");
+  // vct.push_back("THREE");
+  // vct.push_back("FOUR");
+  // checkErase(vct, vct.erase(vct.begin(), vct.end()));
+
+  return (0);
+}
+
+int main(void) {
+  test_erase<ft::vector<std::string> >();
+  std::cout << std::endl;
+  test_erase<std::vector<std::string> >();
   return (0);
 }
