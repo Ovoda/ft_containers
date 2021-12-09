@@ -132,20 +132,20 @@ void test_eq_ope() {
 
   std::cout << "\t\tft_eq_ope:" << std::endl;
   // regular it
-  // ft_eq_ope(it_0 + 3, it_mid);
+  ft_eq_ope(it_0 + 3, it_mid);
   ft_eq_ope(it_0, it_1);
-  // ft_eq_ope(it_1 - 3, it_mid);
-  // // const it
-  // ft_eq_ope(cit_0 + 3, cit_mid);
-  // ft_eq_ope(cit_0, cit_1);
-  // ft_eq_ope(cit_1 - 3, cit_mid);
-  // // both it
-  // ft_eq_ope(it_0 + 3, cit_mid);
-  // ft_eq_ope(it_mid, cit_0 + 3);
-  // ft_eq_ope(it_0, cit_1);
-  // ft_eq_ope(it_1, cit_0);
-  // ft_eq_ope(it_1 - 3, cit_mid);
-  // ft_eq_ope(it_mid, cit_1 - 3);
+  ft_eq_ope(it_1 - 3, it_mid);
+  // const it
+  ft_eq_ope(cit_0 + 3, cit_mid);
+  ft_eq_ope(cit_0, cit_1);
+  ft_eq_ope(cit_1 - 3, cit_mid);
+  // both it
+  ft_eq_ope(it_0 + 3, cit_mid);
+  ft_eq_ope(it_mid, cit_0 + 3);
+  ft_eq_ope(it_0, cit_1);
+  ft_eq_ope(it_1, cit_0);
+  ft_eq_ope(it_1 - 3, cit_mid);
+  ft_eq_ope(it_mid, cit_1 - 3);
 }
 
 bool compare_string_nocase(std::string const a, std::string const b) {
@@ -195,20 +195,9 @@ void relational_ope_test(vector lhs, vector rhs) {
 }
 
 int main() {
-  ft::vector<int> v;
-  v.push_back(0);
-  v.push_back(1);
-  v.push_back(2);
-  v.push_back(3);
-  v.push_back(4);
-  relational_ope_test<ft::vector<int> >(v, v);
-
-  std::vector<int> v2;
-  v2.push_back(0);
-  v2.push_back(1);
-  v2.push_back(2);
-  v2.push_back(3);
-  v2.push_back(4);
-  relational_ope_test<std::vector<int> >(v2, v2);
+  ft::vector<int> v(4, 42);
+  ft::vector<int>::iterator it = v.insert(++v.begin(), 43);
+  std::cout << v << std::endl;
+  std::cout << *it << std::endl;
   return (0);
 }

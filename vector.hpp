@@ -169,23 +169,24 @@ class vector {
   void pop_back() { _alloc.destroy(&_array[_size-- - 1]); }
 
   iterator insert(iterator position, const value_type& val) {
+    int n = position - begin();
+    insert(position, 1, val);
+    return (iterator(&operator[](n)));
+  }
+
+  void insert(iterator position, size_type n, const value_type& val) {
     vector<T> tmp;
-    for (iterator tmp_it = position + 1; tmp_it != end(); tmp_it++) {
+    for (iterator tmp_it = position; tmp_it != end(); tmp_it++) {
       tmp.push_back(*tmp_it);
     }
     resize(position - begin());
-    push_back(val);
-    for (; position != end(); position++) {
-      tmp.push_back(*position);
+    for (int i = 0; i < n; i++) {
+      push_back(val);
+    }
+    for (iterator tmp_it = tmp.begin(); tmp_it != tmp.end(); tmp_it++) {
+      push_back(*tmp_it);
     }
   }
-
-  // void insert(iterator position, size_type n, const value_type& val) {
-  //   reserve(_size + n);
-  //   iterator end = end();
-  //   for (iterator it = begin() + n; it != position + n; it++) {
-  //   }
-  // }
 
   // template <class InputIterator>
   // void insert(iterator position, InputIterator first, InputIterator last);
