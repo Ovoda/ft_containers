@@ -6,10 +6,10 @@ CCFLAGS =
 
 UNAME_S := $(shell uname -s)
 ifeq ($(UNAME_S),Linux)
-	CCFLAGS += g++ -g -D TESTED_NAMESPACE=ft
+	CCFLAGS += g++ -g -Wall -Wextra -Werror
 endif
 ifeq ($(UNAME_S),Darwin)
-	CCFLAGS += clang++ -fsanitize=address -g -D TESTED_NAMESPACE=ft
+	CCFLAGS += clang++ -fsanitize=address -g -Wall -Wextra -Werror
 endif
 
 SRCS_PATH	= ./

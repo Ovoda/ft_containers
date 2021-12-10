@@ -1,16 +1,14 @@
 #ifndef FT_VECTOR_HPP
 #define FT_VECTOR_HPP
 
+#include <comparaison_tools.hpp>
 #include <cstddef>
 #include <iostream>
-// #include <xiterator.hpp>
+#include <iterator.hpp>
 #include <memory>
-
-#include "utils/comparaison_tools.hpp"
-#include "utils/iterator.hpp"
-#include "utils/reverse_iterator.hpp"
-#include "utils/std_lib.hpp"
-#include "utils/type_traits.hpp"
+#include <reverse_iterator.hpp>
+#include <std_lib.hpp>
+#include <type_traits.hpp>
 
 namespace ft {
 
@@ -23,10 +21,10 @@ class vector {
   typedef const T& const_reference;
   typedef T* pointer;
   typedef const T* const_pointer;
-  typedef ft::random_access_iterator<T> iterator;
-  typedef ft::random_access_iterator<const T> const_iterator;
-  typedef ft::reverse_iterator<iterator> reverse_iterator;
-  typedef ft::reverse_iterator<const_iterator> const_reverse_iterator;
+  typedef random_access_iterator<T> iterator;
+  typedef random_access_iterator<const T> const_iterator;
+  typedef reverse_iterator<iterator> reverse_iterator;
+  typedef reverse_iterator<const_iterator> const_reverse_iterator;
   typedef ptrdiff_t difference_type;
   typedef size_t size_type;
 
@@ -215,7 +213,6 @@ class vector {
       *first = *(first + distance);
     }
     _size -= distance;
-    std::cout << *this << std::endl;
     return (ret);
   }
 

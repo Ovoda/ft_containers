@@ -197,6 +197,7 @@ void relational_ope_test(vector lhs, vector rhs) {
 template <class vector>
 void checkErase(vector const &vct, typename vector::const_iterator const &it) {
   static int i = 0;
+  std::cout << it << std::endl;
   std::cout << "[" << i++ << "] "
             << "erase: " << it - vct.begin() << std::endl;
 }
@@ -214,7 +215,7 @@ int test_erase(void) {
   // }
 
   checkErase(vct, vct.erase(vct.begin()));
-  checkErase(vct, vct.erase(vct.end() - 1));
+  // checkErase(vct, vct.erase(vct.end() - 1));
 
   // checkErase(vct, vct.erase(vct.begin(), vct.begin() + 3));
   // checkErase(vct, vct.erase(vct.end() - 3, vct.end() - 1));
