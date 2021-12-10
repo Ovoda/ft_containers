@@ -3,14 +3,23 @@
 int main(void) {
   ft::red_black_tree<int> tree;
 
-  tree.insert(5);
-  tree.insert(2);
-  tree.insert(9);
-  tree.insert(3);
-  tree.insert(6);
-  tree.insert(1);
-  tree.traverse(tree.root(), &ft::red_black_tree<int>::print_node);
-  tree.check_tree();
+  tree.insert(100);
+  // right
+  tree.insert(200);
+  //   tree.insert(250);
+  //   tree.insert(150);
+  // left
+  tree.insert(50);
+  //   tree.insert(75);
+  tree.insert(25);
+
+  //   tree.insert(76);
+  //   tree.insert(74);
+  //   tree.insert(26);
+  //   tree.insert(24);
+
+  //   tree.traverse(tree.root(), &ft::red_black_tree<int>::print_node);
+  //   tree.check_tree();
   tree.print();
   return (0);
 }
