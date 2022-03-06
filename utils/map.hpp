@@ -4,14 +4,15 @@
 #include <cstddef>  // ptrdiff_t, size_t
 #include <functional>
 #include <iterator.hpp>
-#include <pair_node.hpp>
+#include <map_iterator.hpp>
+#include <node.hpp>
 #include <reverse_iterator.hpp>
 #include <std_lib.hpp>
 
 namespace ft {
 
 template <class Key, class T, class Compare = std::less<Key>,
-          class Alloc = std::allocator<ft::pair<const Key, T> > >
+          class Alloc = std::allocator<pair<const Key, T> > >
 class map {
  public:
   typedef Key key_type;
@@ -24,34 +25,76 @@ class map {
   typedef const value_type& const_reference;
   typedef value_type* pointer;
   typedef const value_type* const_pointer;
-  typedef random_access_iterator<value_type> iterator;
-  typedef random_access_iterator<const value_type> const_iterator;
+  typedef map_iterator<value_type> iterator;
+  typedef const_map_iterator<value_type> const_iterator;
   typedef reverse_iterator_base<iterator> reverse_iterator;
   typedef reverse_iterator_base<const_iterator> const_reverse_iterator;
   typedef ptrdiff_t difference_type;
   typedef size_t size_type;
 
-  explicit map(const key_compare& comp = key_compare(),
-               const allocator_type& alloc = allocator_type())
-      : _size(0), _base(nullptr) {}
+  explicit map() : _size(0) {}
+  // const key_compare& comp = key_compare(),
+  // const allocator_type& alloc = allocator_type())
 
-  // template <class InputIterator>
-  // map(InputIterator first, InputIterator last,
-  //     const key_compare& comp = key_compare(),
-  //     const allocator_type& alloc = allocator_type());
-
-  // map(const map& x);
-
-  ~map() {}
-
-  pair<bool, bool> insert(ft::pair<key_type, mapped_type>& _pair) {
-    _base->insert(_pair, _base);
-    return pair<bool, bool>(true, true);
+  // TODO : change void function return
+  pair<iterator, bool> insert(const value_type& value) {
+    if (_size == 0) {
+      _base = _node_alloc.allocate(sizeof(node<value_type>));
+      _node_alloc.construct(_base, node<value_type>(value));
+      _size++;
+      return (make_pair(iterator(_base), true));
+    }
+    pair<node<value_type>*, bool> _first_ret(_base->insert(value));
+    _first_ret.second == true ? _size++ : _size;
+    return (make_pair(iterator(_first_ret.first), _first_ret.second));
   }
 
+  T search(Key key) { return _base->search(key); }
+
+  iterator begin() { return iterator(_base->min()); }
+  const_iterator begin() const { return const_iterator(_base->min()); }
+  iterator end() { return ++iterator(_base->max()); }
+  const_iterator end() const { return ++const_iterator(_base->max()); }
+
+  reverse_iterator rbegin() { return reverse_iterator(end()); }
+  reverse_iterator rend() { return reverse_iterator(begin()); }
+
+  bool empty() const { return _size == 0; }
+  size_type size() const { return _size; }
+  size_type max_size() const { return _node_alloc.max_size(); }
+
+  mapped_type& operator[](const key_type& k) {
+    return (*((this->insert(make_pair(k, mapped_type()))).first)).second;
+  }
+
+  const_iterator find(const key_type& k) const {
+    node<const value_type>* tmp_node;
+    tmp_node = _base->search(k);
+
+    if (tmp_node == nullptr) {
+      return end();
+    }
+    return const_iterator(tmp_node);
+  }
+
+  iterator find(const key_type& k) {
+    node<value_type>* tmp_node;
+    tmp_node = _base->search(k);
+
+    if (tmp_node == nullptr) {
+      return end();
+    }
+    return iterator(tmp_node);
+  }
+
+  ~map() {}
+  // TODO private
+  node<value_type>* _base;
+
  private:
-  node<key_type, mapped_type>* _base;
   int _size;
+  std::allocator<node<pair<const Key, T> > > _node_alloc;
+  Alloc _alloc;
 };
 
 }  // namespace ft

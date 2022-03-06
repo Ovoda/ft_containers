@@ -18,7 +18,7 @@ class pair {
   ~pair() {}
 
   pair& operator=(pair const& rhs) {
-    if (this != &rhs) {
+    if (*this != rhs) {
       first = rhs.first;
       second = rhs.second;
     }

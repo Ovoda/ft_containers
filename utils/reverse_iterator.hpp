@@ -1,5 +1,5 @@
-#ifndef FT_reverse_iterator_base_HPP
-#define FT_reverse_iterator_base_HPP
+#ifndef FT_REVERSE_ITERATOR_BASE_HPP
+#define FT_REVERSE_ITERATOR_BASE_HPP
 #include <cstddef>
 
 #include "iterator.hpp"
@@ -19,10 +19,10 @@ class reverse_iterator_base {
 
   /// Constructers and destructor
   reverse_iterator_base() {}
-  explicit reverse_iterator_base(iterator_type it) : _base(it.base()) {}
+  explicit reverse_iterator_base(iterator_type it) : _base(it) {}
   template <class Iter>
   reverse_iterator_base(const reverse_iterator_base<Iter>& rev_it)
-      : _base(rev_it.base()) {}
+      : _base(rev_it) {}
   ~reverse_iterator_base() {}
 
   iterator_type base() const { return _base; }
@@ -50,9 +50,9 @@ class reverse_iterator_base {
   }
 
   reference operator*() const {
-    Iterator tmp = _base;
-    tmp--;
-    return *(tmp);
+    iterator_type tmp = _base;
+    std::cout << "Hello" << _base->first << std::endl;
+    return (*_base);
   }
   pointer operator->() const { return &(operator*()); }
 
@@ -120,7 +120,7 @@ class reverse_iterator_base {
                          const reverse_iterator_base<Ite2>& lhs);
 
  private:
-  Iterator _base;
+  iterator_type _base;
 };
 
 template <class Ite>

@@ -23,8 +23,8 @@ class vector {
   typedef const T* const_pointer;
   typedef random_access_iterator<T> iterator;
   typedef random_access_iterator<const T> const_iterator;
-  typedef reverse_iterator<iterator> reverse_iterator;
-  typedef reverse_iterator<const_iterator> const_reverse_iterator;
+  typedef reverse_iterator_base<iterator> reverse_iterator;
+  typedef reverse_iterator_base<const_iterator> const_reverse_iterator;
   typedef ptrdiff_t difference_type;
   typedef size_t size_type;
 
