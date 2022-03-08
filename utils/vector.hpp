@@ -17,10 +17,10 @@ class vector {
  public:
   typedef T value_type;
   typedef Alloc allocator_type;
-  typedef T& reference;
-  typedef const T& const_reference;
-  typedef T* pointer;
-  typedef const T* const_pointer;
+  typedef typename allocator_type::reference reference;
+  typedef typename allocator_type::const_reference const_reference;
+  typedef typename allocator_type::pointer pointer;
+  typedef typename allocator_type::const_pointer const_pointer;
   typedef random_access_iterator<T> iterator;
   typedef random_access_iterator<const T> const_iterator;
   typedef reverse_iterator_base<iterator> reverse_iterator;
@@ -54,8 +54,8 @@ class vector {
     }
   }
 
-  iterator begin() { return iterator(&_array[0]); }
-  const_iterator begin() const { return const_iterator(&_array[0]); }
+  iterator begin() { return iterator(_array); }
+  const_iterator begin() const { return const_iterator(_array); }
 
   iterator end() { return iterator(_array + size()); }
   const_iterator end() const { return const_iterator(_array + size()); }

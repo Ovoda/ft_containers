@@ -51,8 +51,8 @@ class reverse_iterator_base {
 
   reference operator*() const {
     iterator_type tmp = _base;
-    std::cout << "Hello" << _base->first << std::endl;
-    return (*_base);
+    tmp--;
+    return (*tmp);
   }
   pointer operator->() const { return &(operator*()); }
 

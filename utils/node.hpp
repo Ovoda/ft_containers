@@ -130,11 +130,11 @@ class node {
     return nullptr;
   }
 
- private:
   node *_right;
   node *_left;
   node *_parent;
   T _pair;
+ private:
   std::allocator<ft::node<T> > _alloc;
 };
 
