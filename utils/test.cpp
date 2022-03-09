@@ -17,8 +17,8 @@ class test {
 };
 
 int main(void) {
-  test<int> a(42);
-  test<const int> b(a);
+  test<const int> a(42);
+  test<int> b(a);
 
   std::cout << "a = " << a.value << std::endl;
   std::cout << "b = " << b.value << std::endl;

@@ -22,7 +22,7 @@ class reverse_iterator_base {
   explicit reverse_iterator_base(iterator_type it) : _base(it) {}
   template <class Iter>
   reverse_iterator_base(const reverse_iterator_base<Iter>& rev_it)
-      : _base(rev_it) {}
+      : _base(rev_it.base()) {}
   ~reverse_iterator_base() {}
 
   iterator_type base() const { return _base; }

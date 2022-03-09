@@ -81,6 +81,12 @@ class random_access_iterator
 
   pointer base() const { return _ptr; }
 
+  reference operator*() const { return *_ptr; }
+
+  pointer operator->() const { return &(operator*()); }
+
+  reference operator[](difference_type index) const { return (_ptr[index]); }
+
   random_access_iterator &operator=(const random_access_iterator &rhs) {
     if (*this != rhs) {
       _ptr = rhs._ptr;
@@ -110,27 +116,6 @@ class random_access_iterator
     return tmp;
   }
 
-  reference operator*() const { return *_ptr; }
-  pointer operator->() const { return &(operator*()); }
-
-  reference operator[](difference_type index) const { return (_ptr[index]); }
-
-  bool operator>(random_access_iterator const &rhs) const {
-    return (this->_ptr > rhs._ptr);
-  }
-
-  bool operator>=(random_access_iterator const &rhs) const {
-    return (this->_ptr >= rhs._ptr);
-  }
-
-  bool operator<(random_access_iterator const &rhs) const {
-    return (this->_ptr < rhs._ptr);
-  }
-
-  bool operator<=(random_access_iterator const &rhs) const {
-    return (this->_ptr <= rhs._ptr);
-  }
-
   random_access_iterator &operator-=(const difference_type n) {
     _ptr -= n;
     return (*this);
@@ -157,6 +142,22 @@ class random_access_iterator
     return (_ptr + rhs._ptr);
   }
 
+  bool operator>(random_access_iterator const &rhs) const {
+    return (this->_ptr > rhs._ptr);
+  }
+
+  bool operator>=(random_access_iterator const &rhs) const {
+    return (this->_ptr >= rhs._ptr);
+  }
+
+  bool operator<(random_access_iterator const &rhs) const {
+    return (this->_ptr < rhs._ptr);
+  }
+
+  bool operator<=(random_access_iterator const &rhs) const {
+    return (this->_ptr <= rhs._ptr);
+  }
+
   /// Overloads
   template <class Ite1, class Ite2>
   friend bool operator!=(const random_access_iterator<Ite1> &rhs,
@@ -181,6 +182,10 @@ class random_access_iterator
   template <class Ite1, class Ite2>
   friend bool operator<=(const random_access_iterator<Ite1> &rhs,
                          const random_access_iterator<Ite2> &lhs);
+
+  operator random_access_iterator<const value_type>() const {
+    return (random_access_iterator<const value_type>(_ptr));
+  }
 
  protected:
   pointer _ptr;
