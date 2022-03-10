@@ -110,17 +110,7 @@ class vector {
 
   vector& operator=(const vector& x) {
     if (this != &x) {
-      if (_capacity > 0) {
-        clear();
-      }
-      _size = 0;
-      _capacity = x.capacity();
-      if (_capacity > 0) {
-        _array = _alloc.allocate(_capacity);
-      }
-      for (const_iterator it = x.begin(); it != x.end(); ++it) {
-        _alloc.construct(&_array[_size++], *it);
-      }
+      assign(x.begin(), x.end());
     }
     return *this;
   }
@@ -214,17 +204,9 @@ class vector {
   }
 
   void swap(vector& x) {
-    pointer tmp_array = _array;
-    size_type tmp_size = _size;
-    size_type tmp_capacity = _capacity;
-
-    _array = x._array;
-    _size = x._size;
-    _capacity = x._capacity;
-
-    x._array = tmp_array;
-    x._size = tmp_size;
-    x._capacity = tmp_capacity;
+    ft::swap(_size, x._size);
+    ft::swap(_capacity, x._capacity);
+    ft::swap(_array, x._array);
   }
 
   void clear() {
@@ -236,8 +218,9 @@ class vector {
 
   template <class Iterator>
   void assign(Iterator first, Iterator last) {
-    vector<value_type> x(first, last);
-    swap(x);
+    for (; first != last; first++) {
+      push_back(*first);
+    }
   }
 
  private:

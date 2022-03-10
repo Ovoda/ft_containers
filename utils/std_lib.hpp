@@ -1,6 +1,8 @@
 #ifndef STD_LIB_HEADER
 #define STD_LIB_HEADER
 
+#include <vector.hpp>
+
 namespace ft {
 template <class T1, class T2>
 class pair {
@@ -70,6 +72,11 @@ void swap(T& _a, T& _b) {
   T _tmp(_a);
   _a = _b;
   _b = _tmp;
+}
+
+template <class T>
+void swap<vector<T>>(vector<T>& _a, vector<T>& _b) {
+  _a.swap(_b);
 }
 
 };  // namespace ft
