@@ -1,12 +1,22 @@
 
-#include <vector.hpp>
+#include <iostream>
+#include <node.hpp>
 
 int main(void) {
-  const int size = 5;
-  ft::vector<int> const vct(size);
-  ft::vector<int>::iterator it = vct.begin();  // <-- error expected
+  ft::tree<char> _t;
 
-  for (int i = 0; i < size; ++i) it[i] = i;
+  _t.insert('c');
+  _t.insert('a');
+  _t.insert('d');
+  _t.insert('b');
+  _t.insert('e');
+
+  _t.print();
+
+  ft::node<char> *_node;
+  _node = _t.search('e');
+
+  std::cout << _node->_value << std::endl;
 
   return (0);
 }
