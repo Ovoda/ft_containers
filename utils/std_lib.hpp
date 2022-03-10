@@ -65,6 +65,13 @@ pair<T1, T2> make_pair(T1 x, T2 y) {
   return (pair<T1, T2>(x, y));
 }
 
+template <class T>
+void swap(T& _a, T& _b) {
+  T _tmp(_a);
+  _a = _b;
+  _b = _tmp;
+}
+
 };  // namespace ft
 
 #endif

@@ -71,6 +71,8 @@
         "queue": "cpp",
         "set": "cpp",
         "stack": "cpp",
-        "iomanip": "cpp"
-    }
+        "iomanip": "cpp",
+        "__functional_03": "cpp"
+    },
+    "C_Cpp.errorSquiggles": "Enabled"
 }

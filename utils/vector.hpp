@@ -48,10 +48,11 @@ class vector {
   }
 
   ~vector() {
-    if (_capacity > 0) {
-      clear();
-      // _alloc.deallocate(_array, _capacity);
+    if (_capacity <= 0) return;
+    for (size_t i = 0; i < _size; i++) {
+      _alloc.destroy(_array + i);
     }
+    _alloc.deallocate(_array, _capacity);
   }
 
   iterator begin() { return iterator(_array); }
@@ -76,9 +77,8 @@ class vector {
 
   void resize(size_type n, value_type val = value_type()) {
     if (n < _size) {
-      for (iterator it = iterator(_array + _size); it != iterator(_array + n);
-           it--) {
-        _alloc.destroy(&(*it));
+      for (size_t i = _size; i < n; i++) {
+        _alloc.destroy(_array + i);
       }
       _size = n;
     } else if (n > _size) {
@@ -93,26 +93,25 @@ class vector {
   bool empty() const { return (_size == 0); }
 
   void reserve(size_type n) {
-    if (n >= _capacity) {
-      vector<value_type> tmp(*this);
+    if (n < _capacity) return;
 
-      if (_capacity > 0) {
-        clear();
-        _alloc.deallocate(_array, _capacity);
-      }
-      _array = _alloc.allocate(n);
-      _capacity = n;
-      for (iterator it = tmp.begin(); it != tmp.end(); ++it) {
-        _alloc.construct(&_array[_size++], *it);
-      }
+    // Phase 1 : create tempory
+    vector<value_type> tmp(0);
+    tmp._array = tmp._alloc.allocate(n);
+    tmp._capacity = n;
+
+    for (size_t i = 0; i < _size; i++) {
+      tmp._alloc.construct(tmp._array + i, _array[i]);
+      tmp._size = i;
     }
+
+    tmp.swap(*this);
   }
 
   vector& operator=(const vector& x) {
     if (this != &x) {
       if (_capacity > 0) {
         clear();
-        _alloc.deallocate(_array, _capacity);
       }
       _size = 0;
       _capacity = x.capacity();
@@ -156,12 +155,10 @@ class vector {
   }
 
   void push_back(value_type const& val) {
-    static int i = 0;
     if (_size >= _capacity) {
       _capacity <= 0 ? reserve(1) : reserve(_capacity *= 2);
     }
     _alloc.construct(&_array[_size++], val);
-    i++;
   }
 
   void pop_back() { _alloc.destroy(&_array[_size-- - 1]); }
@@ -231,8 +228,8 @@ class vector {
   }
 
   void clear() {
-    for (iterator it = begin(); it != end(); ++it) {
-      _alloc.destroy(&(*it));
+    for (size_t i = 0; i < _size; i++) {
+      _alloc.destroy(_array + i);
     }
     _size = 0;
   }
@@ -248,7 +245,6 @@ class vector {
   size_type _size;
   size_type _capacity;
   allocator_type _alloc;
-  iterator _iterator;
 };
 
 template <class T>
@@ -292,7 +288,6 @@ template <class T>
 bool operator>=(const vector<T>& lhs, const vector<T>& rhs) {
   return (!(lhs < rhs));
 }
-
 };  // namespace ft
 
 #endif

@@ -12,15 +12,19 @@ class test {
     }
     return *this;
   }
-
   int value;
+
+  operator test<const int>() { std::cout << "bonjour" << std::endl; }
 };
 
 int main(void) {
   test<const int> a(42);
-  test<int> b(a);
+  const int i = 0;
 
-  std::cout << "a = " << a.value << std::endl;
-  std::cout << "b = " << b.value << std::endl;
+  test<const int> b(42);
+  // test<int> b(a);
+
+  // std::cout << "a = " << a.value << std::endl;
+  // std::cout << "b = " << b.value << std::endl;
   return 0;
 }
