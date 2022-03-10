@@ -93,19 +93,19 @@ class vector {
   bool empty() const { return (_size == 0); }
 
   void reserve(size_type n) {
-    if (n < _capacity) return;
+    if (n >= _capacity) {
+      vector<value_type> tmp;
+      tmp._array = tmp._alloc.allocate(n);
+      tmp._capacity = n;
+      tmp._size = 0;
 
-    // Phase 1 : create tempory
-    vector<value_type> tmp(0);
-    tmp._array = tmp._alloc.allocate(n);
-    tmp._capacity = n;
+      for (size_t i = 0; i < _size; i++) {
+        tmp._alloc.construct(tmp._array + i, _array[i]);
+        tmp._size++;
+      }
 
-    for (size_t i = 0; i < _size; i++) {
-      tmp._alloc.construct(tmp._array + i, _array[i]);
-      tmp._size = i;
+      tmp.swap(*this);
     }
-
-    tmp.swap(*this);
   }
 
   vector& operator=(const vector& x) {
@@ -182,13 +182,15 @@ class vector {
     for (iterator tmp_it = begin(); tmp_it != position; tmp_it++) {
       tmp.push_back(*tmp_it);
     }
+
     for (; first != last; ++first) {
       tmp.push_back(*first);
     }
+
     for (iterator tmp_it = position; tmp_it != end(); tmp_it++) {
       tmp.push_back(*tmp_it);
     }
-    *this = tmp;
+    tmp.swap(*this);
   }
 
   iterator erase(iterator position) { return (erase(position, position + 1)); }
@@ -204,9 +206,20 @@ class vector {
   }
 
   void swap(vector& x) {
-    ft::swap(_size, x._size);
-    ft::swap(_capacity, x._capacity);
-    ft::swap(_array, x._array);
+    size_t tmp_size;
+    tmp_size = _size;
+    _size = x._size;
+    x._size = tmp_size;
+
+    size_t tmp_capacity;
+    tmp_capacity = _capacity;
+    _capacity = x._capacity;
+    x._capacity = tmp_capacity;
+
+    pointer tmp_array;
+    tmp_array = _array;
+    _array = x._array;
+    x._array = tmp_array;
   }
 
   void clear() {
@@ -217,7 +230,10 @@ class vector {
   }
 
   template <class Iterator>
-  void assign(Iterator first, Iterator last) {
+  void assign(Iterator first,
+              typename ft::enable_if<!is_integral<Iterator>::value,
+                                     Iterator>::type last) {
+    clear();
     for (; first != last; first++) {
       push_back(*first);
     }
@@ -270,6 +286,11 @@ bool operator<=(const vector<T>& lhs, const vector<T>& rhs) {
 template <class T>
 bool operator>=(const vector<T>& lhs, const vector<T>& rhs) {
   return (!(lhs < rhs));
+}
+
+template <class T>
+void swap(vector<T>& _a, vector<T>& _b) {
+  _a.swap(_b);
 }
 };  // namespace ft
 
