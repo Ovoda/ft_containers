@@ -26,18 +26,6 @@ class node {
        node_type* right = nullptr, node_type* left = nullptr)
       : _value(value), _parent(parent), _right(right), _left(left) {}
 
-  ~node() {}
-
-  // node_type& operator=(node_type rhs) {
-  //   if (this != &rhs) {
-  //     _right = rhs._right;
-  //     _left = rhs._left;
-  //     _parent = rhs._parent;
-  //     _value = rhs._value;
-  //   }
-  //   return (*this);
-  // }
-
   value_type _value;
   node_pointer _parent;
   node_pointer _right;
@@ -64,9 +52,12 @@ class tree {
 
   tree() : _root(nullptr) {}
   ~tree() {
-    delete_tre
+    delete_tree(_root);
   }
 
+  /* Insert - Search - Remove*/
+
+  /* Insert */
   ft::pair<node_pointer, bool> insert(value_type value) {
     return (insert(_root, value, nullptr));
   }
@@ -86,6 +77,9 @@ class tree {
     return ft::make_pair(_curr, false);
   }
 
+  /* Search */
+  node_pointer search(value_type value) { return search(_root, value); }
+
   node_pointer search(node_pointer _node, value_type value) {
     if (!_node) return nullptr;
     if (value > _node->_value) {
@@ -96,6 +90,30 @@ class tree {
     return (_node);
   }
 
+  /* Remove */
+  void remove(value_type value) {
+    remove(search(value));
+  }
+
+  void remove(node_pointer _curr) {
+    if (!_curr->_right && !_curr->_left) {
+      destroy_node(_curr);
+    } else if (_curr->_right && _curr->_left) {
+      node_pointer inorder_successor = min(_curr->_right);
+      _curr->_value = inorder_successor->_value;
+      destroy_node(inorder_successor);
+    } else if (_curr->_right && !_curr->_left) {
+      _curr->_value = _curr->_right->_value;
+      destroy_node(_curr->_right);
+    } else if (_curr->_left && !_curr->_right) {
+      _curr->_value = _curr->_left->_value;
+      destroy_node(_curr->_left);
+    }
+  }
+
+  /* Helper functions */
+
+  /* Printing helper */
   void print_node(node_pointer _curr) {
     if (!_curr) return;
     std::cout << _curr->_value << ": ";
@@ -105,11 +123,7 @@ class tree {
       std::cout << _curr->_parent->_value << std::endl;
     }
   }
-
-  node_pointer search(value_type value) { return search(_root, value); }
-
-  bool is_empty() { return (_root == nullptr); }
-
+  
   void print(node_pointer root, int space = 0) {
     if (root == NULL) return;
     space += 5;
@@ -121,6 +135,10 @@ class tree {
   }
 
   void print() { print(_root, 0); }
+
+
+  /* Helpers */
+  bool is_empty() { return (_root == nullptr); }
 
   bool is_left_child(node_pointer _curr) {
     return ((_curr->_parent != nullptr && _curr->_parent->_left == _curr)
@@ -156,6 +174,23 @@ class tree {
     return tmp;
   }
 
+  bool is_end(node_pointer _curr) {
+    node<T> *tmp = _curr;
+    while (tmp->_parent) {
+      tmp = tmp->_parent;
+    }
+    return tmp->max() == _curr;
+  }
+
+  bool is_begin(node_pointer _curr) {
+    node<T> *tmp = _curr;
+    while (tmp->_parent) {
+      tmp = tmp->_parent;
+    }
+    return tmp->min() == _curr;
+  }
+
+  /* Destroying helpers */
   node_pointer destroy_node(node_pointer _curr) {
     node_pointer tmp_parent = nullptr;
     bool is_left = false;
@@ -173,22 +208,14 @@ class tree {
     return (tmp_parent);
   }
 
-  void remove(node_pointer _curr) {
-    if (!_curr->_right && !_curr->_left) {
-      destroy_node(_curr);
-    }
-  }
-
-  delete_tree(node_pointer _curr) {
-    if (!_curr->_right && !_curr->_left) {
-      destroy_node(_curr);
-    }
+  void delete_tree(node_pointer _curr) {
     if (_curr->_right) {
       delete_tree(_curr->_right);
     }
     if (_curr->_left) {
       delete_tree(_curr->_left);
     }
+    destroy_node(_curr);
   }
 
  private:
