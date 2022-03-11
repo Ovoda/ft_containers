@@ -23,21 +23,12 @@ int main(void) {
 
   // _t.print();
 
-  ft::tree_iterator<int> _ite = _t._root->min();
+  ft::tree_iterator<int> _ite0 = _t._root->min();
+  ft::tree_iterator<int> _ite1 = _t._root->min();
 
-  std::cout << *_ite << std::endl;
-  ++_ite;
-  std::cout << *_ite << std::endl;
-  _ite++;
-  std::cout << *_ite << std::endl;
+  _ite0++;
 
-  std::cout << std::endl;
-
-  std::cout << *_ite << std::endl;
-  _ite--;
-  std::cout << *_ite << std::endl;
-  --_ite;
-  std::cout << *_ite << std::endl;
+  std::cout << std::boolalpha << (_ite0 == _ite1) << std::endl;
 
   //   _t.insert(50);
   //   _t.insert(40);
