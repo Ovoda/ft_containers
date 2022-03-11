@@ -45,8 +45,53 @@ class map {
 
   ~map() {}
 
+  map& operator=(const map& x) {
+    if (*this != x) {
+    }
+    return *this;
+  }
+
+  iterator begin() { return iterator(_tree._root); }
+  const_iterator begin() const { return const_iterator(_tree._root); }
+
+  iterator end() { return iterator(_tree._root->max())++; }
+  const_iterator end() const { return const_iterator(_tree._root->max())++; }
+
+  bool empty() const { return _tree.is_empty(); }
+
+  size_type size() const {}
+
+  size_type max_size() const { return (_alloc.max_size()); }
+
+  mapped_type& operator[](const key_type& k) {
+    return (*((insert(make_pair(k, mapped_type()))).first)).second;
+  }
+
+  pair<iterator, bool> insert(const value_type& val) {
+    ft::pair<typename tree_type::node_pointer, bool> _ret = _tree.insert(val);
+    return (ft::make_pair(iterator(_ret.first), _ret.second));
+  }
+
+  //   iterator insert(iterator position, const value_type& val) {}
+
+  template <class InputIterator>
+  void insert(InputIterator first, InputIterator last) {}
+
+  void erase(iterator position) {}
+
+  size_type erase(const key_type& k) {
+    _tree.remove(k);
+    return 0;
+  }
+
+  void erase(iterator first, iterator last) {}
+
+  iterator find(const key_type& k) { return (iterator(_tree.search(k))); }
+  const_iterator find(const key_type& k) const {}
+
  private:
   tree_type _tree;
+  allocator_type _alloc;
 };
 
 }  // namespace ft

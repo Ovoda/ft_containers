@@ -90,7 +90,7 @@ class tree {
     return (insert(_root, value, nullptr));
   }
 
-  ft::pair<node_pointer, bool> insert(node_pointer& _curr, value_type value,
+  ft::pair<node_pointer, bool> insert(node_pointer& _curr, value_type& value,
                                       node_pointer _parent) {
     if (!_curr) {
       _curr = _alloc.allocate(1);
