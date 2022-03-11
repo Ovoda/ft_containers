@@ -5,7 +5,7 @@
 
 int main(void) {
   ft::tree<int> _t;
-  ft::tree_iterator<int> _ite;
+  ft::tree_iterator<int> _ite = _t._root;
 
   //   _t.insert(50);
   //   _t.insert(40);
