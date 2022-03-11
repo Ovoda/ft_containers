@@ -1,14 +1,11 @@
 #ifndef FT_VECTOR_HPP
 #define FT_VECTOR_HPP
 
-#include <comparaison_tools.hpp>
 #include <cstddef>
 #include <iostream>
 #include <iterator.hpp>
 #include <memory>
-#include <reverse_iterator.hpp>
-#include <std_lib.hpp>
-#include <type_traits.hpp>
+#include <utils.hpp>
 
 namespace ft {
 

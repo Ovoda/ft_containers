@@ -125,7 +125,7 @@ class tree_const_iterator
                             node<const T>>::iterator_category iterator_category;
 
   tree_const_iterator() : _ptr(nullptr) {}
-  tree_const_iterator(const tree_iterator &src) : _ptr(src._ptr) {}
+  tree_const_iterator(const tree_iterator<T> &src) : _ptr(src._ptr) {}
   tree_const_iterator(const iterator_type &src) : _ptr(src._ptr) {}
   tree_const_iterator(const node_pointer ptr) : _ptr(ptr) {}
   ~tree_const_iterator() {}
