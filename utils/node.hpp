@@ -22,86 +22,26 @@ class node {
 
   typedef std::allocator<node_type> alloc_type;
 
-  node(const value_type& value, node_type* right = nullptr,
-       node_type* left = nullptr, node_type* parent = nullptr)
-      : _value(value), _right(right), _left(left), _parent(parent) {}
+  node(const value_type& value, node_type* parent = nullptr,
+       node_type* right = nullptr, node_type* left = nullptr)
+      : _value(value), _parent(parent), _right(right), _left(left) {}
 
-  ~node() {
-    if (_right) {
-      _alloc.destroy(_right);
-      _alloc.deallocate(_right, 1);
-    }
-    if (_left) {
-      _alloc.destroy(_left);
-      _alloc.deallocate(_left, 1);
-    }
-  }
+  ~node() {}
 
-  node_type& operator=(node_type rhs) {
-    if (this != &rhs) {
-      _right = rhs._right;
-      _left = rhs._left;
-      _parent = rhs._parent;
-      _value = rhs._value;
-    }
-    return (*this);
-  }
+  // node_type& operator=(node_type rhs) {
+  //   if (this != &rhs) {
+  //     _right = rhs._right;
+  //     _left = rhs._left;
+  //     _parent = rhs._parent;
+  //     _value = rhs._value;
+  //   }
+  //   return (*this);
+  // }
 
-  node_pointer min() {
-    node_pointer tmp = this;
-    while (tmp->_left) tmp = tmp->_left;
-    return tmp;
-  }
-
-  node_pointer max() {
-    node_pointer tmp = this;
-    while (tmp->_right) tmp = tmp->_right;
-    return tmp;
-  }
-
-  bool is_left_child() {
-    return ((_parent != nullptr && _parent->_left == this) ? true : false);
-  }
-
-  bool is_right_child() {
-    return ((_parent != nullptr && _parent->_right == this) ? true : false);
-  }
-
-  bool is_left_leaf() {
-    return ((is_left_child() && !_right && !_left) ? true : false);
-  }
-
-  bool is_right_leaf() {
-    return ((is_right_child() && !_right && !_left) ? true : false);
-  }
-
-  ft::pair<node_pointer, bool> insert(node_type src) {
-    if (src._value > _value) {
-      if (!_right) {
-        _right = _alloc.allocate(1);
-        _alloc.construct(_right, src);
-        _right->_parent = this;
-      } else {
-        return (_right->insert(src));
-      }
-      return ft::make_pair(_right, true);
-    } else if (src._value < _value) {
-      if (!_left) {
-        _left = _alloc.allocate(1);
-        _alloc.construct(_left, src);
-        _left->_parent = this;
-      } else {
-        return (_left->insert(src));
-      }
-      return ft::make_pair(_left, true);
-    }
-    return ft::make_pair(this, false);
-  }
-
+  value_type _value;
+  node_pointer _parent;
   node_pointer _right;
   node_pointer _left;
-  node_pointer _parent;
-  value_type _value;
   alloc_type _alloc;
 };
 
@@ -124,22 +64,26 @@ class tree {
 
   tree() : _root(nullptr) {}
   ~tree() {
-    _alloc.destroy(_root);
-    _alloc.deallocate(_root, 1);
-  }
-
-  ft::pair<node_pointer, bool> insert(node_type node) {
-    return (_root->insert(node));
+    delete_tre
   }
 
   ft::pair<node_pointer, bool> insert(value_type value) {
-    if (!_root) {
-      _root = _alloc.allocate(1);
-      _alloc.construct(_root, node_type(value));
-      return (make_pair(_root, true));
+    return (insert(_root, value, nullptr));
+  }
+
+  ft::pair<node_pointer, bool> insert(node_pointer& _curr, value_type value,
+                                      node_pointer _parent) {
+    if (!_curr) {
+      _curr = _alloc.allocate(1);
+      _alloc.construct(_curr, node_type(value, _parent));
+      return (make_pair(_curr, true));
     }
-    node_type _new_node(value);
-    return (insert(_new_node));
+    if (value > _curr->_value) {
+      return (insert(_curr->_right, value, _curr));
+    } else if (value < _curr->_value) {
+      return (insert(_curr->_left, value, _curr));
+    }
+    return ft::make_pair(_curr, false);
   }
 
   node_pointer search(node_pointer _node, value_type value) {
@@ -150,6 +94,16 @@ class tree {
       return search(_node->_left, value);
     }
     return (_node);
+  }
+
+  void print_node(node_pointer _curr) {
+    if (!_curr) return;
+    std::cout << _curr->_value << ": ";
+    if (_curr->_parent == nullptr)
+      std::cout << "nullptr" << std::endl;
+    else {
+      std::cout << _curr->_parent->_value << std::endl;
+    }
   }
 
   node_pointer search(value_type value) { return search(_root, value); }
@@ -167,6 +121,75 @@ class tree {
   }
 
   void print() { print(_root, 0); }
+
+  bool is_left_child(node_pointer _curr) {
+    return ((_curr->_parent != nullptr && _curr->_parent->_left == _curr)
+                ? true
+                : false);
+  }
+
+  bool is_right_child(node_pointer _curr) {
+    return ((_curr->_parent != nullptr && _curr->_parent->_right == _curr)
+                ? true
+                : false);
+  }
+
+  bool is_left_leaf(node_pointer _curr) {
+    return ((is_left_child(_curr) && !_curr->_right && !_curr->_left) ? true
+                                                                      : false);
+  }
+
+  bool is_right_leaf(node_pointer _curr) {
+    return ((is_right_child(_curr) && !_curr->_right && !_curr->_left) ? true
+                                                                       : false);
+  }
+
+  node_pointer min(node_pointer _curr) {
+    node_pointer tmp = _curr;
+    while (tmp->_left) tmp = tmp->_left;
+    return tmp;
+  }
+
+  node_pointer max(node_pointer _curr) {
+    node_pointer tmp = _curr;
+    while (tmp->_right) tmp = tmp->_right;
+    return tmp;
+  }
+
+  node_pointer destroy_node(node_pointer _curr) {
+    node_pointer tmp_parent = nullptr;
+    bool is_left = false;
+    if (_curr->_parent) {
+      tmp_parent = _curr->_parent;
+      is_left = is_left_child(_curr) ? true : false;
+    }
+    _alloc.destroy(_curr);
+    _alloc.deallocate(_curr, 1);
+    if (tmp_parent && !is_left) {
+      tmp_parent->_right = nullptr;
+    } else if (tmp_parent && is_left) {
+      tmp_parent->_left = nullptr;
+    }
+    return (tmp_parent);
+  }
+
+  void remove(node_pointer _curr) {
+    if (!_curr->_right && !_curr->_left) {
+      destroy_node(_curr);
+    }
+  }
+
+  delete_tree(node_pointer _curr) {
+    if (!_curr->_right && !_curr->_left) {
+      destroy_node(_curr);
+    }
+    if (_curr->_right) {
+      delete_tree(_curr->_right);
+    }
+    if (_curr->_left) {
+      delete_tree(_curr->_left);
+    }
+  }
 
  private:
   node_pointer _root;

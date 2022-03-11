@@ -3,20 +3,15 @@
 #include <node.hpp>
 
 int main(void) {
-  ft::tree<char> _t;
+  ft::tree<int> _t;
 
-  _t.insert('c');
-  _t.insert('a');
-  _t.insert('d');
-  _t.insert('b');
-  _t.insert('e');
+  _t.insert(3);
+  _t.insert(1);
+  _t.insert(2);
 
+  ft::tree<int>::node_pointer five = _t.search(2);
+  _t.remove(five);
   _t.print();
-
-  ft::node<char> *_node;
-  _node = _t.search('e');
-
-  std::cout << _node->_value << std::endl;
 
   return (0);
 }
