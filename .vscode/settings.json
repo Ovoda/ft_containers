@@ -74,7 +74,13 @@
         "iomanip": "cpp",
         "__functional_03": "cpp",
         "__functional_base_03": "cpp",
-        "ranges": "cpp"
+        "ranges": "cpp",
+        "random": "cpp",
+        "*.tcc": "cpp",
+        "compare": "cpp",
+        "concepts": "cpp",
+        "numeric": "cpp",
+        "fstream": "cpp"
     },
     "C_Cpp.errorSquiggles": "Enabled"
 }

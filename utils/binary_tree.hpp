@@ -26,6 +26,36 @@ class node {
        node_type* right = nullptr, node_type* left = nullptr)
       : _value(value), _parent(parent), _right(right), _left(left) {}
 
+  /* Helpers */
+
+  bool is_left_child() {
+    return ((_parent != nullptr && _parent->_left == this) ? true : false);
+  }
+
+  bool is_right_child() {
+    return ((_parent != nullptr && _parent->_right == this) ? true : false);
+  }
+
+  bool is_left_leaf() {
+    return ((is_left_child() && !_right && !_left) ? true : false);
+  }
+
+  bool is_right_leaf() {
+    return ((is_right_child() && !_right && !_left) ? true : false);
+  }
+
+  node_pointer min() {
+    node_pointer tmp = this;
+    while (tmp->_left) tmp = tmp->_left;
+    return tmp;
+  }
+
+  node_pointer max() {
+    node_pointer tmp = this;
+    while (tmp->_right) tmp = tmp->_right;
+    return tmp;
+  }
+
   value_type _value;
   node_pointer _parent;
   node_pointer _right;
@@ -51,9 +81,7 @@ class tree {
   typedef const node_type* node_const_pointer;
 
   tree() : _root(nullptr) {}
-  ~tree() {
-    delete_tree(_root);
-  }
+  ~tree() { delete_tree(_root); }
 
   /* Insert - Search - Remove*/
 
@@ -67,7 +95,7 @@ class tree {
     if (!_curr) {
       _curr = _alloc.allocate(1);
       _alloc.construct(_curr, node_type(value, _parent));
-      return (make_pair(_curr, true));
+      return (ft::make_pair(_curr, true));
     }
     if (value > _curr->_value) {
       return (insert(_curr->_right, value, _curr));
@@ -91,9 +119,7 @@ class tree {
   }
 
   /* Remove */
-  void remove(value_type value) {
-    remove(search(value));
-  }
+  void remove(value_type value) { remove(search(value)); }
 
   void remove(node_pointer _curr) {
     if (!_curr->_right && !_curr->_left) {
@@ -123,7 +149,7 @@ class tree {
       std::cout << _curr->_parent->_value << std::endl;
     }
   }
-  
+
   void print(node_pointer root, int space = 0) {
     if (root == NULL) return;
     space += 5;
@@ -136,46 +162,8 @@ class tree {
 
   void print() { print(_root, 0); }
 
-
-  /* Helpers */
-  bool is_empty() { return (_root == nullptr); }
-
-  bool is_left_child(node_pointer _curr) {
-    return ((_curr->_parent != nullptr && _curr->_parent->_left == _curr)
-                ? true
-                : false);
-  }
-
-  bool is_right_child(node_pointer _curr) {
-    return ((_curr->_parent != nullptr && _curr->_parent->_right == _curr)
-                ? true
-                : false);
-  }
-
-  bool is_left_leaf(node_pointer _curr) {
-    return ((is_left_child(_curr) && !_curr->_right && !_curr->_left) ? true
-                                                                      : false);
-  }
-
-  bool is_right_leaf(node_pointer _curr) {
-    return ((is_right_child(_curr) && !_curr->_right && !_curr->_left) ? true
-                                                                       : false);
-  }
-
-  node_pointer min(node_pointer _curr) {
-    node_pointer tmp = _curr;
-    while (tmp->_left) tmp = tmp->_left;
-    return tmp;
-  }
-
-  node_pointer max(node_pointer _curr) {
-    node_pointer tmp = _curr;
-    while (tmp->_right) tmp = tmp->_right;
-    return tmp;
-  }
-
   bool is_end(node_pointer _curr) {
-    node<T> *tmp = _curr;
+    node<T>* tmp = _curr;
     while (tmp->_parent) {
       tmp = tmp->_parent;
     }
@@ -183,7 +171,7 @@ class tree {
   }
 
   bool is_begin(node_pointer _curr) {
-    node<T> *tmp = _curr;
+    node<T>* tmp = _curr;
     while (tmp->_parent) {
       tmp = tmp->_parent;
     }
@@ -196,7 +184,7 @@ class tree {
     bool is_left = false;
     if (_curr->_parent) {
       tmp_parent = _curr->_parent;
-      is_left = is_left_child(_curr) ? true : false;
+      is_left = _curr->is_left_child() ? true : false;
     }
     _alloc.destroy(_curr);
     _alloc.deallocate(_curr, 1);
@@ -218,8 +206,10 @@ class tree {
     destroy_node(_curr);
   }
 
+  bool is_empty() { return (_root == nullptr); }
   // TODO put _root private
   node_pointer _root;
+
  private:
   alloc_type _alloc;
 };
