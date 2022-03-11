@@ -197,6 +197,7 @@ class tree {
   }
 
   void delete_tree(node_pointer _curr) {
+    if (!_curr) return;
     if (_curr->_right) {
       delete_tree(_curr->_right);
     }

@@ -17,17 +17,36 @@ class map {
   typedef Compare key_compare;
   //   typedef value_comp;
   typedef Alloc allocator_type;
-  typedef allocator_type::reference reference;
-  typedef allocator_type::pointer pointer;
-  typedef allocator_type::const_reference const_reference;
-  typedef allocator_type::const_pointer const_pointer;
+  typedef typename allocator_type::reference reference;
+  typedef typename allocator_type::pointer pointer;
+  typedef typename allocator_type::const_reference const_reference;
+  typedef typename allocator_type::const_pointer const_pointer;
   typedef ft::tree_iterator<value_type> iterator;
   typedef ft::tree_const_iterator<value_type> const_iterator;
   typedef ft::reverse_iterator<iterator> reverse_iterator;
   typedef ft::reverse_iterator<const_iterator> const_reverse_iterator;
+  typedef ptrdiff_t difference_type;
+  typedef size_t size_type;
 
  private:
-  tree _tree;
+  typedef tree<value_type> tree_type;
+
+ public:
+  explicit map(const key_compare& comp = key_compare(),
+               const allocator_type& alloc = allocator_type())
+      : _tree(tree_type()) {}
+
+  template <class InputIterator>
+  map(InputIterator first, InputIterator last,
+      const key_compare& comp = key_compare(),
+      const allocator_type& alloc = allocator_type()) {}
+
+  map(const map& x) {}
+
+  ~map() {}
+
+ private:
+  tree_type _tree;
 };
 
 }  // namespace ft
