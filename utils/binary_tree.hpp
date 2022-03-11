@@ -218,8 +218,9 @@ class tree {
     destroy_node(_curr);
   }
 
- private:
+  // TODO put _root private
   node_pointer _root;
+ private:
   alloc_type _alloc;
 };
 
