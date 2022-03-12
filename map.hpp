@@ -51,11 +51,11 @@ class map {
     return *this;
   }
 
-  iterator begin() { return iterator(_tree._root); }
-  const_iterator begin() const { return const_iterator(_tree._root); }
+  iterator begin() { return iterator(_tree.begin()); }
+  const_iterator begin() const { return const_iterator(_tree.begin()); }
 
-  iterator end() { return iterator(_tree._root->max())++; }
-  const_iterator end() const { return const_iterator(_tree._root->max())++; }
+  iterator end() { return iterator(_tree.end()); }
+  const_iterator end() const { return const_iterator(_tree.end()); }
 
   bool empty() const { return _tree.is_empty(); }
 

@@ -26,13 +26,25 @@ class node {
        node_type* right = nullptr, node_type* left = nullptr)
       : _value(value), _parent(parent), _right(right), _left(left) {}
 
+  // node(node_type* parent = nullptr, node_type* right = nullptr,
+  //      node_type* left = nullptr)
+  //     : _value(value_type()), _parent(parent), _right(right), _left(left) {}
+
   /* Helpers */
 
+  bool is_mutual_parents() {
+    if (_parent != nullptr && _parent->_parent != nullptr)
+      return ((_parent->_parent == this) ? true : false);
+    return false;
+  }
+
   bool is_left_child() {
+    if (is_mutual_parents()) return false;
     return ((_parent != nullptr && _parent->_left == this) ? true : false);
   }
 
   bool is_right_child() {
+    if (is_mutual_parents()) return false;
     return ((_parent != nullptr && _parent->_right == this) ? true : false);
   }
 
@@ -63,7 +75,7 @@ class node {
   alloc_type _alloc;
 };
 
-template <class T, class Alloc = std::allocator<ft::node<T> > >
+template <class T, class Alloc = std::allocator<ft::node<T>>>
 class tree {
  public:
   typedef T value_type;
@@ -80,14 +92,29 @@ class tree {
   typedef node_type* node_pointer;
   typedef const node_type* node_const_pointer;
 
-  tree() : _root(nullptr) {}
-  ~tree() { delete_tree(_root); }
+  tree() : _root(nullptr) { _end = new node_type(value_type()); }
+  ~tree() {
+    delete_tree(_root);
+    delete _end;
+  }
+
+  node_pointer begin() {
+    if (!_root) return nullptr;
+    return _root->min();
+  }
+
+  node_pointer end() { return _end; }
 
   /* Insert - Search - Remove*/
 
   /* Insert */
   ft::pair<node_pointer, bool> insert(value_type value) {
-    return (insert(_root, value, nullptr));
+    ft::pair<node_pointer, bool> _ret = insert(_root, value, nullptr);
+    _root->_parent = _end;
+    _end->_parent = _root;
+    _end->_right = _root;
+    _end->_left = _root;
+    return (_ret);
   }
 
   ft::pair<node_pointer, bool> insert(node_pointer& _curr, value_type& value,
@@ -156,7 +183,7 @@ class tree {
     print(root->_right, space);
     std::cout << std::endl;
     for (int i = 5; i < space; i++) std::cout << " ";
-    std::cout << root->_value << "\n";
+    std::cout << root->_value.first << "\n";
     print(root->_left, space);
   }
 
@@ -180,6 +207,7 @@ class tree {
 
   /* Destroying helpers */
   node_pointer destroy_node(node_pointer _curr) {
+    if (_curr == _end) return nullptr;
     node_pointer tmp_parent = nullptr;
     bool is_left = false;
     if (_curr->_parent) {
@@ -188,7 +216,7 @@ class tree {
     }
     _alloc.destroy(_curr);
     _alloc.deallocate(_curr, 1);
-    if (tmp_parent && !is_left) {
+    if (tmp_parent != nullptr && !is_left) {
       tmp_parent->_right = nullptr;
     } else if (tmp_parent && is_left) {
       tmp_parent->_left = nullptr;
@@ -208,11 +236,13 @@ class tree {
   }
 
   bool is_empty() { return (_root == nullptr); }
+
   // TODO put _root private
   node_pointer _root;
 
  private:
   alloc_type _alloc;
+  node_pointer _end;
 };
 
 }  // namespace ft

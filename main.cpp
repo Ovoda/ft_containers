@@ -1,33 +1,27 @@
-
 #include <binary_tree.hpp>
 #include <binary_tree_iterator.hpp>
 #include <iostream>
 #include <map.hpp>
+#include <map>
 #include <string>
 #include <utils.hpp>
-
-// ? what happens when begin with empty map, vector, etc...
-// |----- SEGV when I do it
+#ifndef NAMESPACE
+#define NAMESPACE ft
+#endif
 
 int main() {
-  ft::map<char, int> mymap;
+  NAMESPACE::map<int, int> _m;
 
-  // first insert function version (single parameter):
-  mymap.insert(ft::pair<char, int>('a', 100));
-  mymap.insert(ft::pair<char, int>('z', 200));
+  _m.insert(NAMESPACE::pair<int, int>(5, 5));
+  _m.insert(NAMESPACE::pair<int, int>(1, 1));
+  _m.insert(NAMESPACE::pair<int, int>(10, 10));
 
-  ft::pair<ft::map<char, int>::iterator, bool> ret;
-  ret = mymap.insert(ft::pair<char, int>('z', 500));
-  if (ret.second == false) {
-    std::cout << "element 'z' already existed";
-    std::cout << " with a value of " << ret.first->second << '\n';
+  NAMESPACE::map<int, int>::iterator begin = _m.end();
+  NAMESPACE::map<int, int>::iterator end = _m.begin();
+
+  begin--;
+  for (; begin != end; begin--) {
+    std::cout << begin->first << ": " << begin->second << std::endl;
   }
-
-  ft::map<char, int>::iterator it = mymap.begin();
-
-  std::cout << "mymap contains:\n";
-  for (it = mymap.begin(); it != mymap.end(); ++it)
-    std::cout << it->first << " => " << it->second << '\n';
-
   return 0;
 }
