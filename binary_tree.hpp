@@ -26,12 +26,7 @@ class node {
        node_type* right = nullptr, node_type* left = nullptr)
       : _value(value), _parent(parent), _right(right), _left(left) {}
 
-  // node(node_type* parent = nullptr, node_type* right = nullptr,
-  //      node_type* left = nullptr)
-  //     : _value(value_type()), _parent(parent), _right(right), _left(left) {}
-
   /* Helpers */
-
   bool is_mutual_parents() {
     if (_parent != nullptr && _parent->_parent != nullptr)
       return ((_parent->_parent == this) ? true : false);
@@ -92,18 +87,22 @@ class tree {
   typedef node_type* node_pointer;
   typedef const node_type* node_const_pointer;
 
-  tree() : _root(nullptr) { _end = new node_type(value_type()); }
+  // TO DO remove new delete
+  tree() : _root(nullptr), _size(0) { _end = new node_type(value_type()); }
   ~tree() {
     delete_tree(_root);
     delete _end;
   }
 
-  node_pointer begin() {
+  node_pointer begin() const {
     if (!_root) return nullptr;
     return _root->min();
   }
 
-  node_pointer end() { return _end; }
+  node_pointer end() const {
+    if (!_root) return begin();
+    return _end;
+  }
 
   /* Insert - Search - Remove*/
 
@@ -122,6 +121,7 @@ class tree {
     if (!_curr) {
       _curr = _alloc.allocate(1);
       _alloc.construct(_curr, node_type(value, _parent));
+      _size++;
       return (ft::make_pair(_curr, true));
     }
     if (value > _curr->_value) {
@@ -133,26 +133,43 @@ class tree {
   }
 
   /* Search */
-  node_pointer search(value_type value) { return search(_root, value); }
+  node_pointer search(const typename value_type::first_type& value) const {
+    return search(_root, value);
+  }
 
-  node_pointer search(node_pointer _node, value_type value) {
+  node_pointer search(node_pointer _node,
+                      const typename value_type::first_type& value) const {
     if (!_node) return nullptr;
-    if (value > _node->_value) {
+    if (value > _node->_value.first) {
       return search(_node->_right, value);
-    } else if (value < _node->_value) {
+    } else if (value < _node->_value.first) {
       return search(_node->_left, value);
     }
     return (_node);
   }
 
   /* Remove */
-  void remove(value_type value) { remove(search(value)); }
+  void remove(const typename value_type::first_type& value) {
+    remove(search(value));
+  }
+
+  void replace_by(node_pointer _curr, node_pointer _new_curr,
+                  bool _new_is_left_child) {
+    if (_curr->_parent) {
+      _new_curr->_parent = _curr->_parent;
+      if (_new_is_left_child) {
+        _new_curr->_right = _curr->_right;
+      } else {
+        _new_curr->_left = _curr->_left;
+      }
+    }
+  }
 
   void remove(node_pointer _curr) {
     if (!_curr->_right && !_curr->_left) {
       destroy_node(_curr);
     } else if (_curr->_right && _curr->_left) {
-      node_pointer inorder_successor = min(_curr->_right);
+      node_pointer inorder_successor = _curr->_right->min();
       _curr->_value = inorder_successor->_value;
       destroy_node(inorder_successor);
     } else if (_curr->_right && !_curr->_left) {
@@ -221,6 +238,7 @@ class tree {
     } else if (tmp_parent && is_left) {
       tmp_parent->_left = nullptr;
     }
+    _size--;
     return (tmp_parent);
   }
 
@@ -237,8 +255,9 @@ class tree {
 
   bool is_empty() { return (_root == nullptr); }
 
-  // TODO put _root private
+ public:
   node_pointer _root;
+  size_t _size;
 
  private:
   alloc_type _alloc;

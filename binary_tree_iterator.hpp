@@ -108,28 +108,27 @@ template <class T>
 class tree_const_iterator
     : public iterator<ft::bidirectional_iterator_tag, const T> {
  public:
-  typedef tree_const_iterator<const T> iterator_type;
+  typedef tree_const_iterator<T> iterator_type;
   typedef typename iterator<ft::bidirectional_iterator_tag, const T>::value_type
       value_type;
-  typedef typename iterator<ft::bidirectional_iterator_tag,
-                            node<const T> >::reference node_reference;
-  typedef
-      typename iterator<ft::bidirectional_iterator_tag, node<const T> >::pointer
-          node_pointer;
+  typedef typename iterator<ft::bidirectional_iterator_tag, node<T> >::reference
+      node_reference;
+  typedef typename iterator<ft::bidirectional_iterator_tag, node<T> >::pointer
+      node_pointer;
   typedef typename iterator<ft::bidirectional_iterator_tag, const T>::reference
       reference;
   typedef typename iterator<ft::bidirectional_iterator_tag, const T>::pointer
       pointer;
   typedef typename iterator<ft::bidirectional_iterator_tag,
-                            node<const T> >::difference_type difference_type;
-  typedef
-      typename iterator<ft::bidirectional_iterator_tag,
-                        node<const T> >::iterator_category iterator_category;
+                            node<T> >::difference_type difference_type;
+  typedef typename iterator<ft::bidirectional_iterator_tag,
+                            node<T> >::iterator_category iterator_category;
 
   tree_const_iterator() : _ptr(nullptr) {}
-  tree_const_iterator(const tree_iterator<T> &src) : _ptr(src._ptr) {}
-  tree_const_iterator(const iterator_type &src) : _ptr(src._ptr) {}
+  tree_const_iterator(const iterator_type &src) : _ptr(src.base()) {}
   tree_const_iterator(const node_pointer ptr) : _ptr(ptr) {}
+  // aka 'node<ft::pair<const int, int> > *'
+  // aka 'node<const ft::pair<const int, int> > *const
   ~tree_const_iterator() {}
 
   node_pointer base() const { return _ptr; }
