@@ -70,7 +70,7 @@ class node {
   alloc_type _alloc;
 };
 
-template <class T, class Alloc = std::allocator<ft::node<T>>>
+template <class T, class Alloc = std::allocator<ft::node<T> > >
 class tree {
  public:
   typedef T value_type;
@@ -90,7 +90,7 @@ class tree {
   // TO DO remove new delete
   tree() : _root(nullptr), _size(0) { _end = new node_type(value_type()); }
   ~tree() {
-    delete_tree(_root);
+    // delete_tree(_root);
     delete _end;
   }
 
@@ -149,36 +149,72 @@ class tree {
   }
 
   /* Remove */
-  void remove(const typename value_type::first_type& value) {
-    remove(search(value));
+  void deep_swap_one_child(node_pointer _curr, node_pointer _new_curr,
+                           bool _curr_is_left_child) {
+    node_pointer tmp_parent = _curr->_parent;
+
+    if (_curr_is_left_child) {
+      _curr->_parent->_left = _new_curr;
+    } else {
+      _curr->_parent->_right = _new_curr;
+    }
+    _new_curr->_parent = _curr->_parent;
+
+    std::cout << "_curr->_value : " << _curr->_value.first << std::endl;
+    std::cout << "_new_curr->_value : " << _new_curr->_value.first << std::endl;
+    if (_curr->_parent)
+      std::cout << "_curr->_parent : " << _curr->_parent->_value.first
+                << std::endl;
+    if (_new_curr->_parent)
+      std::cout << "_new_curr->_parent : " << _new_curr->_parent->_value.first
+                << std::endl;
+    if (_curr->_parent->_right)
+      std::cout << "_curr->_parent->_right : "
+                << _curr->_parent->_right->_value.first << std::endl;
+    if (_new_curr->_parent->_right)
+      std::cout << "_new_curr->_parent->_right : "
+                << _new_curr->_parent->_right->_value.first << std::endl;
+    if (_curr->_parent->_left)
+      std::cout << "_curr->_parent->_left : "
+                << _curr->_parent->_left->_value.first << std::endl;
+    if (_new_curr->_parent->_left)
+      std::cout << "_new_curr->_parent->_left : "
+                << _new_curr->_parent->_left->_value.first << std::endl;
+
+    // _new_curr->_parent = _curr->_parent;
+    // _new_curr->_right = _curr->_right;
+    // _new_curr->_left = _curr->_left;
+    // if (_curr->is_left_child()) _curr->_parent->_left = _new_curr;
+    // if (_curr->is_left_child()) _curr->_parent->_right = _new_curr;
   }
 
-  void replace_by(node_pointer _curr, node_pointer _new_curr,
-                  bool _new_is_left_child) {
-    if (_curr->_parent) {
-      _new_curr->_parent = _curr->_parent;
-      if (_new_is_left_child) {
-        _new_curr->_right = _curr->_right;
-      } else {
-        _new_curr->_left = _curr->_left;
-      }
-    }
+  void remove(const typename value_type::first_type& value) {
+    remove(search(value));
   }
 
   void remove(node_pointer _curr) {
     if (!_curr->_right && !_curr->_left) {
       destroy_node(_curr);
-    } else if (_curr->_right && _curr->_left) {
-      node_pointer inorder_successor = _curr->_right->min();
-      _curr->_value = inorder_successor->_value;
-      destroy_node(inorder_successor);
-    } else if (_curr->_right && !_curr->_left) {
-      _curr->_value = _curr->_right->_value;
-      destroy_node(_curr->_right);
-    } else if (_curr->_left && !_curr->_right) {
-      _curr->_value = _curr->_left->_value;
-      destroy_node(_curr->_left);
+      return;
     }
+
+    if (_curr->_right && _curr->_left) {
+      // node_pointer inorder_successor = _curr->_right->min();
+      // deep_swap_one_child(_curr, inorder_successor);
+      // destroy_node(_curr);
+      return;
+    }
+
+    node_pointer _new_curr;
+    if (_curr->_right && !_curr->_left) {
+      _new_curr = _curr->_right;
+    } else if (_curr->_right && !_curr->_left) {
+      _new_curr = _curr->_left;
+    }
+
+    deep_swap_one_child(_curr, _new_curr, _curr->is_left_child());
+    _curr->_parent = nullptr;
+    destroy_node(_curr);
   }
 
   /* Helper functions */

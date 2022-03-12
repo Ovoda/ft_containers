@@ -96,10 +96,18 @@ class map {
     }
   }
 
-  void erase(iterator position) { _tree.remove(position->first); }
+  void erase(iterator position) {
+    _tree.print();
+    std::cout << "__________________" << std::endl;
+    _tree.remove(position->first);
+    _tree.print();
+  }
 
   size_type erase(const key_type& k) {
+    _tree.print();
+    std::cout << "__________________" << std::endl;
     _tree.remove(k);
+    _tree.print();
     return 1;
   }
 

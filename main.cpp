@@ -18,6 +18,7 @@ int main() {
   _m.insert(NAMESPACE::pair<int, int>(18, 18));
   _m.insert(NAMESPACE::pair<int, int>(3, 3));
   _m.insert(NAMESPACE::pair<int, int>(6, 6));
+  _m.insert(NAMESPACE::pair<int, int>(7, 7));
 
   for (int i = 0; i < 20; i++) {
     std::cout << i;
@@ -29,12 +30,9 @@ int main() {
 
   ft::map<int, int>::iterator it;
 
-  it = _m.find(5);
-  if (it != _m.end()) _m.erase(it);
+  _m.erase(6);
+  _m.erase(1);
+  _m.erase(3);
 
-  std::cout << "elements in map:" << '\n';
-  std::cout << "5 => " << _m.find(5)->second << '\n';
-  std::cout << "18 => " << _m.find(18)->second << '\n';
-  std::cout << "1 => " << _m.find(1)->second << '\n';
   return (0);
 }
