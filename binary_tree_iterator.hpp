@@ -41,7 +41,7 @@ class tree_iterator : public iterator<ft::bidirectional_iterator_tag, T> {
 
   reference operator*() const { return _ptr->_value; }
 
-  pointer operator->() { return &(operator*()); }
+  pointer operator->() const { return &(operator*()); }
 
   iterator_type operator++(int) {
     iterator_type _tmp = *this;
@@ -138,7 +138,7 @@ class tree_const_iterator
 
   reference operator*() const { return _ptr->_value; }
 
-  pointer operator->() { return &(operator*()); }
+  pointer operator->() const { return &(operator*()); }
 
   iterator_type operator++(int) {
     iterator_type _tmp = *this;
