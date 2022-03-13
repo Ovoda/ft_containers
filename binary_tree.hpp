@@ -22,7 +22,7 @@ class node {
 
   typedef std::allocator<node_type> alloc_type;
 
-  node(const value_type& value, node_type* parent = nullptr,
+  node(const value_type value, node_type* parent = nullptr,
        node_type* right = nullptr, node_type* left = nullptr)
       : _value(value), _parent(parent), _right(right), _left(left) {}
 
@@ -90,7 +90,7 @@ class tree {
   // TO DO remove new delete
   tree() : _root(nullptr), _size(0) { _end = new node_type(value_type()); }
   ~tree() {
-    // delete_tree(_root);
+    delete_tree(_root);
     delete _end;
   }
 
@@ -159,33 +159,51 @@ class tree {
       _curr->_parent->_right = _new_curr;
     }
     _new_curr->_parent = _curr->_parent;
+  }
 
-    std::cout << "_curr->_value : " << _curr->_value.first << std::endl;
-    std::cout << "_new_curr->_value : " << _new_curr->_value.first << std::endl;
-    if (_curr->_parent)
-      std::cout << "_curr->_parent : " << _curr->_parent->_value.first
-                << std::endl;
-    if (_new_curr->_parent)
-      std::cout << "_new_curr->_parent : " << _new_curr->_parent->_value.first
-                << std::endl;
-    if (_curr->_parent->_right)
-      std::cout << "_curr->_parent->_right : "
-                << _curr->_parent->_right->_value.first << std::endl;
-    if (_new_curr->_parent->_right)
-      std::cout << "_new_curr->_parent->_right : "
-                << _new_curr->_parent->_right->_value.first << std::endl;
-    if (_curr->_parent->_left)
-      std::cout << "_curr->_parent->_left : "
-                << _curr->_parent->_left->_value.first << std::endl;
-    if (_new_curr->_parent->_left)
-      std::cout << "_new_curr->_parent->_left : "
-                << _new_curr->_parent->_left->_value.first << std::endl;
+  void swap_nodes(node_pointer node_a, node_pointer node_b) {
+    node_pointer tmp = new node_type(ft::pair<int, int>(0, 0));
 
-    // _new_curr->_parent = _curr->_parent;
-    // _new_curr->_right = _curr->_right;
-    // _new_curr->_left = _curr->_left;
-    // if (_curr->is_left_child()) _curr->_parent->_left = _new_curr;
-    // if (_curr->is_left_child()) _curr->_parent->_right = _new_curr;
+    if (node_b->_parent->_left == node_b) {
+      node_b->_parent->_left = node_b->_right;
+    }
+    if (node_b->_parent->_right == node_b) {
+      node_b->_parent->_right = node_b->_right;
+    }
+    if (node_a->_parent->_left == node_a) {
+      node_a->_parent->_left = node_b;
+    }
+    if (node_a->_parent->_right == node_a) {
+      node_a->_parent->_right = node_b;
+    }
+    node_b->_parent = node_a->_parent;
+
+    node_b->_left = node_a->_left;
+    if (node_b->_left) node_b->_left->_parent = node_b;
+
+    node_b->_right = node_a->_right;
+    if (node_b->_right) node_b->_right->_parent = node_b;
+
+    node_a->_parent = nullptr;
+    node_a->_left = nullptr;
+    node_a->_right = nullptr;
+  }
+
+  void helper(node_pointer curr) {
+    std::cout << curr->_value.first << ": Parent("
+              << curr->_parent->_value.first << ")" << std::endl;
+  }
+
+  void deep_swap_two_children(node_pointer _curr, node_pointer _new_curr,
+                              bool _curr_is_left_child) {
+    swap_nodes(_curr, _new_curr);
+    _root = _new_curr;
+    while (_root->_parent && _root->_parent != _end) {
+      _root = _root->_parent;
+    }
+    helper(_root);
+    helper(_root->_right);
+    helper(_root->_left);
   }
 
   void remove(const typename value_type::first_type& value) {
@@ -199,7 +217,9 @@ class tree {
     }
 
     if (_curr->_right && _curr->_left) {
-      // node_pointer inorder_successor = _curr->_right->min();
+      node_pointer inorder_successor = _curr->_right->min();
+      deep_swap_two_children(_curr, _curr->_right->min(),
+                             _curr->is_left_child());
       // deep_swap_one_child(_curr, inorder_successor);
       // destroy_node(_curr);
       return;

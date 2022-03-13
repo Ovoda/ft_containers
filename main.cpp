@@ -17,8 +17,9 @@ int main() {
   _m.insert(NAMESPACE::pair<int, int>(10, 10));
   _m.insert(NAMESPACE::pair<int, int>(18, 18));
   _m.insert(NAMESPACE::pair<int, int>(3, 3));
-  _m.insert(NAMESPACE::pair<int, int>(6, 6));
   _m.insert(NAMESPACE::pair<int, int>(7, 7));
+  _m.insert(NAMESPACE::pair<int, int>(8, 8));
+  _m.insert(NAMESPACE::pair<int, int>(6, 6));
 
   for (int i = 0; i < 20; i++) {
     std::cout << i;
@@ -30,9 +31,11 @@ int main() {
 
   ft::map<int, int>::iterator it;
 
-  _m.erase(6);
-  _m.erase(1);
-  _m.erase(3);
+  // _m.erase(6);
+  // _m.erase(7);
+  // _m.erase(3);
+  // _m.erase(10);
+  _m.erase(5);
 
   return (0);
 }
