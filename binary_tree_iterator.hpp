@@ -53,8 +53,7 @@ class tree_iterator : public iterator<ft::bidirectional_iterator_tag, T> {
     if (!_ptr) return *this;
 
     if (_ptr->_right) {
-      _ptr = _ptr->_right;
-      _ptr = _ptr->min();
+      _ptr = _ptr->_right->min();
       return *this;
     }
 
@@ -72,18 +71,17 @@ class tree_iterator : public iterator<ft::bidirectional_iterator_tag, T> {
   }
 
   iterator_type &operator--() {
-    if (_ptr) {
-      if (_ptr->is_left_leaf()) {
-        while (_ptr->is_left_child()) {
-          _ptr = _ptr->_parent;
-        }
-        _ptr = _ptr->_parent;
-      } else if (_ptr->is_right_leaf() || !_ptr->_left) {
-        _ptr = _ptr->_parent;
-      } else if (_ptr->_left) {
-        _ptr = _ptr->_left->max();
-      }
+    if (!_ptr) return *this;
+
+    if (_ptr->_left) {
+      _ptr = _ptr->_left->max();
+      return *this;
     }
+
+    while (_ptr->is_left_child()) {
+      _ptr = _ptr->_parent;
+    }
+    _ptr = _ptr->_parent;
     return *this;
   }
 

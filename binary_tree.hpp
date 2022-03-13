@@ -162,12 +162,15 @@ class tree {
   }
 
   void replace_two_child(node_pointer node_a, node_pointer node_b) {
+    /* Giving child of the replacing node to its parent */
     if (node_b->_parent->_left == node_b) {
       node_b->_parent->_left = node_b->_right;
     }
     if (node_b->_parent->_right == node_b) {
       node_b->_parent->_right = node_b->_right;
     }
+
+    /* Giving parents of the replaced node to the replacing node */
     if (node_a->_parent->_left == node_a) {
       node_a->_parent->_left = node_b;
     }
@@ -176,18 +179,18 @@ class tree {
     }
     node_b->_parent = node_a->_parent;
 
+    /* Giving childs of the replaced node to the replacing node */
     node_b->_left = node_a->_left;
     if (node_b->_left) node_b->_left->_parent = node_b;
 
     node_b->_right = node_a->_right;
     if (node_b->_right) node_b->_right->_parent = node_b;
 
-    // node_a->_left = nullptr;
-    // node_a->_right = nullptr;
-    // node_a->_parent = nullptr;
-
+    /* Deleting replaced node */
     _alloc.destroy(node_a);
     _alloc.deallocate(node_a, 1);
+
+    /* Getting the root ont the right node since it might have been changed */
     reset_root(node_b);
   }
 
