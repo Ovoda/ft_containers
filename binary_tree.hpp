@@ -314,6 +314,11 @@ class tree {
     if (_curr->_left) {
       delete_tree(_curr->_left);
     }
+    if (_curr->is_left_child()) {
+      _curr->_parent->_left = nullptr;
+    } else {
+      _curr->_parent->_right = nullptr;
+    }
     _alloc.destroy(_curr);
     _alloc.deallocate(_curr, 1);
     _curr = nullptr;
