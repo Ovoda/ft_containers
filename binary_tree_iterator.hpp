@@ -123,9 +123,8 @@ class tree_const_iterator
 
   tree_const_iterator() : _ptr(nullptr) {}
   tree_const_iterator(const iterator_type &src) : _ptr(src.base()) {}
+  tree_const_iterator(const tree_iterator<T> &src) : _ptr(src.base()) {}
   tree_const_iterator(const node_pointer ptr) : _ptr(ptr) {}
-  // aka 'node<ft::pair<const int, int> > *'
-  // aka 'node<const ft::pair<const int, int> > *const
   ~tree_const_iterator() {}
 
   node_pointer base() const { return _ptr; }
@@ -194,6 +193,24 @@ template <class T1, class T2>
 bool operator==(const tree_const_iterator<T1> &_ite1,
                 const tree_const_iterator<T2> &_ite2) {
   return (_ite1.base() == _ite2.base());
+}
+
+template <class T>
+bool operator==(const tree_iterator<T> &_ite1,
+                const tree_const_iterator<T> &_ite2) {
+  return (_ite1.base() == _ite2.base());
+}
+
+template <class T>
+bool operator!=(const tree_iterator<T> &_ite1,
+                const tree_const_iterator<T> &_ite2) {
+  return (_ite1.base() != _ite2.base());
+}
+
+template <class T>
+bool operator!=(const tree_const_iterator<T> &_ite1,
+                const tree_iterator<T> &_ite2) {
+  return (_ite1.base() != _ite2.base());
 }
 
 template <class T1, class T2>

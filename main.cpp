@@ -11,50 +11,36 @@
 #define NAMESPACE ft
 #endif
 
-void print_map(ft::map<int, int> &_m) {
-  ft::map<int, int>::iterator _ite = _m.begin();
-
-  int i = 0;
-  for (; _ite != _m.end(); _ite++) {
-    std::cout << _ite->first << std::endl;
-    i++;
-    if (i > 10) break;
-    // getchar();
-  }
+template <class Key, class T>
+void print(NAMESPACE::map<Key, T>& lst) {
+  for (typename NAMESPACE::map<Key, T>::iterator it = lst.begin();
+       it != lst.end(); it++)
+    std::cout << it->first << " => " << it->second << '\n';
 }
 
 int main() {
-  NAMESPACE::map<int, int> _m;
-  _m.insert(NAMESPACE::pair<int, int>(5, 5));
-  _m.insert(NAMESPACE::pair<int, int>(1, 1));
-  _m.insert(NAMESPACE::pair<int, int>(10, 10));
-  _m.insert(NAMESPACE::pair<int, int>(18, 18));
-  _m.insert(NAMESPACE::pair<int, int>(3, 3));
-  _m.insert(NAMESPACE::pair<int, int>(7, 7));
-  _m.insert(NAMESPACE::pair<int, int>(8, 8));
-  _m.insert(NAMESPACE::pair<int, int>(6, 6));
+  ft::map<char, int> _m;
+  ft::map<char, int>::iterator it;
 
-  for (int i = 0; i < 20; i++) {
-    std::cout << i;
-    if (_m.count(i) > 0)
-      std::cout << " is an element of map" << std::endl;
-    else
-      std::cout << " is not an element of map" << std::endl;
-  }
+  _m['a'] = 10;
+  _m['b'] = 20;
+  _m['c'] = 30;
+  _m['d'] = 40;
+  _m['e'] = 50;
+  _m['f'] = 60;
 
-  ft::map<int, int>::iterator it;
+  // it = _m.find('b');
+  // _m.erase(it);  // erasing by iterator
 
-  // print_map(_m);
-  // _m.erase(6);
-  // print_map(_m);
-  // _m.erase(7);
-  // print_map(_m);
-  // _m.erase(3);
-  // print_map(_m);
-  _m.erase(10);
-  print_map(_m);
-  // _m.erase(5);
-  // print_map(_m);
+  // _m.erase('e');  // erasing by key
+  _m.erase('f');  // erasing by key
 
-  return (0);
+  // it = _m.find('e');
+  // _m.erase(it, _m.end());  // erasing by range
+
+  // show content:
+  for (it = _m.begin(); it != _m.end(); ++it)
+    std::cout << it->first << " => " << it->second << '\n';
+
+  return 0;
 }

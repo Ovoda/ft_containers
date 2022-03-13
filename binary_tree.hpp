@@ -70,7 +70,10 @@ class node {
   alloc_type _alloc;
 };
 
-template <class T, class Alloc = std::allocator<ft::node<T> > >
+/* ! this btree only works with ft::pair or std::pair so far */
+
+template <class T, class Compare = ft::less<typename T::first_type>,
+          class Alloc = std::allocator<ft::node<T> > >
 class tree {
  public:
   typedef T value_type;
@@ -80,6 +83,7 @@ class tree {
   typedef const value_type* const_pointer;
 
   typedef Alloc alloc_type;
+  typedef Compare key_comp;
 
   typedef typename node<T>::node_type node_type;
   typedef node_type& node_reference;
@@ -124,10 +128,10 @@ class tree {
       _size++;
       return (ft::make_pair(_curr, true));
     }
-    if (value > _curr->_value) {
-      return (insert(_curr->_right, value, _curr));
-    } else if (value < _curr->_value) {
+    if (_key_comp(value.first, _curr->_value.first)) {
       return (insert(_curr->_left, value, _curr));
+    } else if (_key_comp(_curr->_value.first, value.first)) {
+      return (insert(_curr->_right, value, _curr));
     }
     return ft::make_pair(_curr, false);
   }
@@ -137,15 +141,16 @@ class tree {
     return search(_root, value);
   }
 
-  node_pointer search(node_pointer _node,
+  node_pointer search(node_pointer _curr,
                       const typename value_type::first_type& value) const {
-    if (!_node) return nullptr;
-    if (value > _node->_value.first) {
-      return search(_node->_right, value);
-    } else if (value < _node->_value.first) {
-      return search(_node->_left, value);
+    if (!_curr) return nullptr;
+
+    if (_key_comp(value, _curr->_value.first)) {
+      return search(_curr->_left, value);
+    } else if (_key_comp(_curr->_value.first, value)) {
+      return search(_curr->_right, value);
     }
-    return (_node);
+    return (_curr);
   }
 
   /* Remove */
@@ -157,8 +162,10 @@ class tree {
       _curr->_parent->_right = _new_curr;
     }
     _new_curr->_parent = _curr->_parent;
-    // _curr->_parent = nullptr;
-    destroy_node(_curr);
+    _alloc.destroy(_curr);
+    _alloc.deallocate(_curr, 1);
+    _curr = nullptr;
+    reset_root(_new_curr);
   }
 
   void replace_two_child(node_pointer node_a, node_pointer node_b) {
@@ -189,7 +196,7 @@ class tree {
     /* Deleting replaced node */
     _alloc.destroy(node_a);
     _alloc.deallocate(node_a, 1);
-
+    node_a = nullptr;
     /* Getting the root ont the right node since it might have been changed */
     reset_root(node_b);
   }
@@ -200,14 +207,22 @@ class tree {
 
     /* No childs : destroy node */
     if (!_curr->_right && !_curr->_left) {
-      destroy_node(_curr);
+      if (_curr->is_left_child()) {
+        _curr->_parent->_left = nullptr;
+      } else {
+        _curr->_parent->_right = nullptr;
+      }
+      _alloc.destroy(_curr);
+      _alloc.deallocate(_curr, 1);
+      _size--;
+      reset_root(_root);
       return (1);
     }
 
     /* 2 children : swap node with it's successor and destroy it */
     if (_curr->_right && _curr->_left) {
       replace_two_child(_curr, _curr->_right->min());
-      print();
+      _size--;
       return (1);
     }
 
@@ -217,7 +232,7 @@ class tree {
     } else if (_curr->_right && !_curr->_left) {
       replace_one_child(_curr, _curr->_left);
     }
-
+    _size--;
     return (1);
   }
 
@@ -228,6 +243,7 @@ class tree {
   /* Helper functions */
 
   void reset_root(node_pointer _curr) {
+    if (!_curr) return;
     _root = _curr;
     while (_root->_parent && _root->_parent != _end) {
       _root = _root->_parent;
@@ -283,37 +299,28 @@ class tree {
   }
 
   /* Destroying helpers */
-  node_pointer destroy_node(node_pointer _curr) {
-    if (_curr == _end) return nullptr;
-    node_pointer tmp_parent = nullptr;
-    bool is_left = false;
-    if (_curr->_parent) {
-      tmp_parent = _curr->_parent;
-      is_left = _curr->is_left_child() ? true : false;
-    }
-    _alloc.destroy(_curr);
-    _alloc.deallocate(_curr, 1);
-    if (tmp_parent != nullptr && !is_left) {
-      tmp_parent->_right = nullptr;
-    } else if (tmp_parent && is_left) {
-      tmp_parent->_left = nullptr;
-    }
-    _size--;
-    return (tmp_parent);
+
+  void clear() {
+    delete_tree(_root);
+    _root = nullptr;
+    _size = 0;
   }
 
   void delete_tree(node_pointer _curr) {
-    if (!_curr) return;
+    if (!_curr || _size <= 0) return;
     if (_curr->_right) {
       delete_tree(_curr->_right);
     }
     if (_curr->_left) {
       delete_tree(_curr->_left);
     }
-    destroy_node(_curr);
+    _alloc.destroy(_curr);
+    _alloc.deallocate(_curr, 1);
+    _curr = nullptr;
+    return;
   }
 
-  bool is_empty() { return (_root == nullptr); }
+  bool is_empty() const { return (_size == 0); }
 
  public:
   node_pointer _root;
@@ -322,6 +329,7 @@ class tree {
  private:
   alloc_type _alloc;
   node_pointer _end;
+  key_comp _key_comp;
 };
 
 }  // namespace ft

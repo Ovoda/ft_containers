@@ -29,7 +29,7 @@ class map {
   typedef size_t size_type;
 
  private:
-  typedef tree<value_type> tree_type;
+  typedef tree<value_type, key_compare> tree_type;
 
  public:
   explicit map(const key_compare& comp = key_compare(),
@@ -77,7 +77,7 @@ class map {
   size_type max_size() const { return (_alloc.max_size()); }
 
   mapped_type& operator[](const key_type& k) {
-    return (*((insert(make_pair(k, mapped_type()))).first)).second;
+    return (*((insert(ft::make_pair(k, mapped_type()))).first)).second;
   }
 
   pair<iterator, bool> insert(const value_type& val) {
@@ -85,9 +85,10 @@ class map {
     return (ft::make_pair(iterator(_ret.first), _ret.second));
   }
 
-  // iterator insert(iterator position, const value_type& val) {
-  // 	for ()
-  // }
+  iterator insert(iterator position, const value_type& val) {
+    (void)position;
+    return (insert(val).first);
+  }
 
   template <class InputIterator>
   void insert(InputIterator first, InputIterator last) {
@@ -101,7 +102,11 @@ class map {
   size_type erase(const key_type& k) { return (_tree.remove(k)); }
 
   void erase(iterator first, iterator last) {
-    for (; first != last; first++) erase(first);
+    for (; first != last;) {
+      key_type _v = first->first;
+      first++;
+      _tree.remove(_v);
+    }
   }
 
   iterator find(const key_type& k) { return (iterator(_tree.search(k))); }
@@ -112,9 +117,57 @@ class map {
 
   size_type count(const key_type& k) const { return (_tree.search(k)) ? 1 : 0; }
 
-  void clear() { _tree.delete_tree(_tree._root); }
+  void clear() { _tree.clear(); }
 
   key_compare key_comp() const { return _key_comp; }
+
+  iterator lower_bound(const key_type& k) {
+    iterator _ite = begin();
+    for (; _ite != end(); ++_ite) {
+      if (!_key_comp(_ite->first, k)) {
+        break;
+      }
+    }
+    return _ite;
+  }
+
+  const_iterator lower_bound(const key_type& k) const {
+    const_iterator _ite = begin();
+    for (; _ite != end(); ++_ite) {
+      if (!_key_comp(_ite->first, k)) {
+        break;
+      }
+    }
+    return _ite;
+  }
+
+  iterator upper_bound(const key_type& k) {
+    iterator _ite = begin();
+    for (; _ite != end(); ++_ite) {
+      if (_key_comp(k, _ite->first)) {
+        break;
+      }
+    }
+    return _ite;
+  }
+
+  const_iterator upper_bound(const key_type& k) const {
+    const_iterator _ite = begin();
+    for (; _ite != end(); ++_ite) {
+      if (_key_comp(k, _ite->first)) {
+        break;
+      }
+    }
+    return _ite;
+  }
+
+  pair<iterator, iterator> equal_range(const key_type& k) {
+    return (ft::make_pair(lower_bound(k), upper_bound(k)));
+  }
+
+  pair<const_iterator, const_iterator> equal_range(const key_type& k) const {
+    return (ft::make_pair(lower_bound(k), upper_bound(k)));
+  }
 
  private:
   tree_type _tree;

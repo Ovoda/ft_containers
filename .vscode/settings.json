@@ -80,7 +80,8 @@
         "compare": "cpp",
         "concepts": "cpp",
         "numeric": "cpp",
-        "fstream": "cpp"
+        "fstream": "cpp",
+        "__undef_macros": "cpp"
     },
     "C_Cpp.errorSquiggles": "Enabled"
 }
