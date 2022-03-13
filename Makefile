@@ -9,7 +9,7 @@ ifeq ($(UNAME_S),Linux)
 	CCFLAGS += clang++ -g
 endif
 ifeq ($(UNAME_S),Darwin)
-	CCFLAGS += clang++ -fsanitize=address -g 
+	CCFLAGS += clang++ -fsanitize=address -g -Wall -Werror -Wextra
 endif
 
 SRCS_PATH	= ./

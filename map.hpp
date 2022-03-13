@@ -34,7 +34,7 @@ class map {
  public:
   explicit map(const key_compare& comp = key_compare(),
                const allocator_type& alloc = allocator_type())
-      : _tree(tree_type()), _key_comp(comp) {}
+      : _tree(tree_type()), _alloc(alloc), _key_comp(comp) {}
 
   template <class InputIterator>
   map(InputIterator first, InputIterator last,
@@ -96,22 +96,13 @@ class map {
     }
   }
 
-  void erase(iterator position) {
-    _tree.print();
-    std::cout << "__________________" << std::endl;
-    _tree.remove(position->first);
-    _tree.print();
-  }
+  void erase(iterator position) { _tree.remove(position->first); }
 
-  size_type erase(const key_type& k) {
-    _tree.print();
-    std::cout << "__________________" << std::endl;
-    _tree.remove(k);
-    _tree.print();
-    return 1;
-  }
+  size_type erase(const key_type& k) { return (_tree.remove(k)); }
 
-  void erase(iterator first, iterator last) {}
+  void erase(iterator first, iterator last) {
+    for (; first != last; first++) erase(first);
+  }
 
   iterator find(const key_type& k) { return (iterator(_tree.search(k))); }
 

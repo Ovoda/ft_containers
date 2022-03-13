@@ -1,3 +1,4 @@
+
 #include <binary_tree.hpp>
 #include <binary_tree_iterator.hpp>
 #include <iostream>
@@ -9,6 +10,18 @@
 #ifndef NAMESPACE
 #define NAMESPACE ft
 #endif
+
+void print_map(ft::map<int, int> &_m) {
+  ft::map<int, int>::iterator _ite = _m.begin();
+
+  int i = 0;
+  for (; _ite != _m.end(); _ite++) {
+    std::cout << _ite->first << std::endl;
+    i++;
+    if (i > 10) break;
+    // getchar();
+  }
+}
 
 int main() {
   NAMESPACE::map<int, int> _m;
@@ -31,11 +44,17 @@ int main() {
 
   ft::map<int, int>::iterator it;
 
+  // print_map(_m);
   // _m.erase(6);
+  // print_map(_m);
   // _m.erase(7);
+  // print_map(_m);
   // _m.erase(3);
-  // _m.erase(10);
-  _m.erase(5);
+  // print_map(_m);
+  _m.erase(10);
+  print_map(_m);
+  // _m.erase(5);
+  // print_map(_m);
 
   return (0);
 }

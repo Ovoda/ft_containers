@@ -149,21 +149,19 @@ class tree {
   }
 
   /* Remove */
-  void deep_swap_one_child(node_pointer _curr, node_pointer _new_curr,
-                           bool _curr_is_left_child) {
-    node_pointer tmp_parent = _curr->_parent;
-
-    if (_curr_is_left_child) {
+ private:
+  void replace_one_child(node_pointer _curr, node_pointer _new_curr) {
+    if (_curr->is_left_child()) {
       _curr->_parent->_left = _new_curr;
     } else {
       _curr->_parent->_right = _new_curr;
     }
     _new_curr->_parent = _curr->_parent;
+    // _curr->_parent = nullptr;
+    destroy_node(_curr);
   }
 
-  void swap_nodes(node_pointer node_a, node_pointer node_b) {
-    node_pointer tmp = new node_type(ft::pair<int, int>(0, 0));
-
+  void replace_two_child(node_pointer node_a, node_pointer node_b) {
     if (node_b->_parent->_left == node_b) {
       node_b->_parent->_left = node_b->_right;
     }
@@ -184,60 +182,58 @@ class tree {
     node_b->_right = node_a->_right;
     if (node_b->_right) node_b->_right->_parent = node_b;
 
-    node_a->_parent = nullptr;
-    node_a->_left = nullptr;
-    node_a->_right = nullptr;
+    // node_a->_left = nullptr;
+    // node_a->_right = nullptr;
+    // node_a->_parent = nullptr;
+
+    _alloc.destroy(node_a);
+    _alloc.deallocate(node_a, 1);
+    reset_root(node_b);
   }
 
-  void helper(node_pointer curr) {
-    std::cout << curr->_value.first << ": Parent("
-              << curr->_parent->_value.first << ")" << std::endl;
-  }
+ public:
+  size_t remove(node_pointer _curr) {
+    if (!_curr) return (0);
 
-  void deep_swap_two_children(node_pointer _curr, node_pointer _new_curr,
-                              bool _curr_is_left_child) {
-    swap_nodes(_curr, _new_curr);
-    _root = _new_curr;
-    while (_root->_parent && _root->_parent != _end) {
-      _root = _root->_parent;
-    }
-    helper(_root);
-    helper(_root->_right);
-    helper(_root->_left);
-  }
-
-  void remove(const typename value_type::first_type& value) {
-    remove(search(value));
-  }
-
-  void remove(node_pointer _curr) {
+    /* No childs : destroy node */
     if (!_curr->_right && !_curr->_left) {
       destroy_node(_curr);
-      return;
+      return (1);
     }
 
+    /* 2 children : swap node with it's successor and destroy it */
     if (_curr->_right && _curr->_left) {
-      node_pointer inorder_successor = _curr->_right->min();
-      deep_swap_two_children(_curr, _curr->_right->min(),
-                             _curr->is_left_child());
-      // deep_swap_one_child(_curr, inorder_successor);
-      // destroy_node(_curr);
-      return;
+      replace_two_child(_curr, _curr->_right->min());
+      print();
+      return (1);
     }
 
-    node_pointer _new_curr;
+    /* 1 child : swap node with it's successor and destroy it */
     if (_curr->_right && !_curr->_left) {
-      _new_curr = _curr->_right;
+      replace_one_child(_curr, _curr->_right);
     } else if (_curr->_right && !_curr->_left) {
-      _new_curr = _curr->_left;
+      replace_one_child(_curr, _curr->_left);
     }
 
-    deep_swap_one_child(_curr, _new_curr, _curr->is_left_child());
-    _curr->_parent = nullptr;
-    destroy_node(_curr);
+    return (1);
+  }
+
+  size_t remove(const typename value_type::first_type& value) {
+    return (remove(search(value)));
   }
 
   /* Helper functions */
+
+  void reset_root(node_pointer _curr) {
+    _root = _curr;
+    while (_root->_parent && _root->_parent != _end) {
+      _root = _root->_parent;
+    }
+    _end->_parent = _root;
+    _end->_right = _root;
+    _end->_left = _root;
+    _root->_parent = _end;
+  }
 
   /* Printing helper */
   void print_node(node_pointer _curr) {
@@ -257,6 +253,11 @@ class tree {
     std::cout << std::endl;
     for (int i = 5; i < space; i++) std::cout << " ";
     std::cout << root->_value.first << "\n";
+    // if (root->_parent)
+    //   std::cout << " P[" << root->_parent->_value.first << "] ";
+    // if (root->_right) std::cout << " R[" << root->_right->_value.first << "]
+    // "; if (root->_left) std::cout << " L[" << root->_left->_value.first << "]
+    // "; std::cout << std::endl;
     print(root->_left, space);
   }
 
