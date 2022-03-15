@@ -30,14 +30,14 @@ public:
   typedef size_t size_type;
 
   class value_compare
-  { // in C++98, it is required to inherit
-    // binary_function<value_type,value_type,bool>
+  {
     friend class map;
 
   protected:
     key_compare _key_comp;
     value_compare (Compare c)
-        : _key_comp (c) {} // constructed with map's comparison object
+        : _key_comp (c) {}
+  
   public:
     typedef bool result_type;
     typedef value_type first_argument_type;

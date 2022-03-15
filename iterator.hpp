@@ -88,7 +88,7 @@ class random_access_iterator
   reference operator[](difference_type index) const { return (_ptr[index]); }
 
   random_access_iterator &operator=(const random_access_iterator &rhs) {
-    if (*this != rhs) {
+    if (this != &rhs) {
       _ptr = rhs._ptr;
     }
     return *this;
@@ -297,35 +297,6 @@ class reverse_iterator {
     tmp._base -= n;
     return tmp;
   }
-
-  template <class Ite>
-  friend reverse_iterator<Ite> operator+(
-      typename reverse_iterator<Ite>::difference_type n,
-      const reverse_iterator<Ite> &rev_it);
-
-  template <class Ite1, class Ite2>
-  friend bool operator!=(const reverse_iterator<Ite1> &rhs,
-                         const reverse_iterator<Ite2> &lhs);
-
-  template <class Ite1, class Ite2>
-  friend bool operator==(const reverse_iterator<Ite1> &rhs,
-                         const reverse_iterator<Ite2> &lhs);
-
-  template <class Ite1, class Ite2>
-  friend bool operator>(const reverse_iterator<Ite1> &rhs,
-                        const reverse_iterator<Ite2> &lhs);
-
-  template <class Ite1, class Ite2>
-  friend bool operator<(const reverse_iterator<Ite1> &rhs,
-                        const reverse_iterator<Ite2> &lhs);
-
-  template <class Ite1, class Ite2>
-  friend bool operator>=(const reverse_iterator<Ite1> &rhs,
-                         const reverse_iterator<Ite2> &lhs);
-
-  template <class Ite1, class Ite2>
-  friend bool operator<=(const reverse_iterator<Ite1> &rhs,
-                         const reverse_iterator<Ite2> &lhs);
 
  private:
   iterator_type _base;

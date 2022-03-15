@@ -339,7 +339,7 @@ public:
       {
         replace_one_child (_curr, _curr->_right);
       }
-    else if (_curr->_right && !_curr->_left)
+    else if (!_curr->_right && _curr->_left)
       {
         replace_one_child (_curr, _curr->_left);
       }
