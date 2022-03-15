@@ -92,28 +92,58 @@ class tree {
   typedef const node_type* node_const_pointer;
 
   // TO DO remove new delete
-  tree() : _root(nullptr), _size(0) { _end = new node_type(value_type()); }
+  tree() : _root(nullptr), _size(0) {
+    _end = new node_type(value_type());
+    _end->_parent = nullptr;
+    _end->_left = nullptr;
+    _end->_right = nullptr;
+  }
+
   ~tree() {
     delete_tree(_root);
     delete _end;
   }
 
+  tree& operator=(const tree& _src) {
+    if (this != &_src) {
+      _root = _src._root;
+      _alloc = _src._alloc;
+      _key_comp = _src._key_comp;
+      if (_root != nullptr) _root->_parent = _end;
+      getchar();
+      std::cout << "bonjou" << std::endl;
+      reset_root(_root);
+    }
+    return *this;
+  }
+
+  void swap(tree& x) {
+    size_t tmp_size = _size;
+    _size = x._size;
+    x._size = tmp_size;
+
+    node_type* tmp = _root;
+    _root = x._root;
+    x._root = tmp;
+
+    tmp = _end;
+    _end = x._end;
+    x._end = tmp;
+  }
+
   node_pointer begin() const {
-    if (!_root) return nullptr;
+    if (!_root) return end();
     return _root->min();
   }
 
-  node_pointer end() const {
-    if (!_root) return begin();
-    return _end;
-  }
+  node_pointer end() const { return _end; }
 
   /* Insert - Search - Remove*/
 
   /* Insert */
   ft::pair<node_pointer, bool> insert(value_type value) {
     ft::pair<node_pointer, bool> _ret = insert(_root, value, nullptr);
-    _root->_parent = _end;
+    if (_root) _root->_parent = _end;
     _end->_parent = _root;
     _end->_right = _root;
     _end->_left = _root;
@@ -272,11 +302,6 @@ class tree {
     std::cout << std::endl;
     for (int i = 5; i < space; i++) std::cout << " ";
     std::cout << root->_value.first << "\n";
-    // if (root->_parent)
-    //   std::cout << " P[" << root->_parent->_value.first << "] ";
-    // if (root->_right) std::cout << " R[" << root->_right->_value.first << "]
-    // "; if (root->_left) std::cout << " L[" << root->_left->_value.first << "]
-    // "; std::cout << std::endl;
     print(root->_left, space);
   }
 
