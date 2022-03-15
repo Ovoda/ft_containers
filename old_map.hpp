@@ -75,7 +75,7 @@ class map {
     node<const value_type>* tmp_node;
     tmp_node = _tree->search(k);
 
-    if (tmp_node == nullptr) {
+    if (tmp_node == NULL) {
       return end();
     }
     return const_iterator(tmp_node);
@@ -85,7 +85,7 @@ class map {
     node<value_type>* tmp_node;
     tmp_node = _tree->search(k);
 
-    if (tmp_node == nullptr) {
+    if (tmp_node == NULL) {
       return end();
     }
     return iterator(tmp_node);

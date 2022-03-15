@@ -25,10 +25,10 @@ class vector {
   typedef ptrdiff_t difference_type;
   typedef size_t size_type;
 
-  vector() : _array(nullptr), _size(0), _capacity(0) {}
+  vector() : _array(NULL), _size(0), _capacity(0) {}
 
   explicit vector(size_type n, const value_type& val = value_type())
-      : _array(nullptr), _size(0), _capacity(0) {
+      : _array(NULL), _size(0), _capacity(0) {
     for (size_type i = 0; i < n; i++) push_back(val);
   }
 
@@ -36,11 +36,11 @@ class vector {
   vector(InputIterator first,
          typename ft::enable_if<!ft::is_integral<InputIterator>::value,
                                 InputIterator>::type last)
-      : _array(nullptr), _size(0), _capacity(0) {
+      : _array(NULL), _size(0), _capacity(0) {
     for (InputIterator i = first; i != last; i++) push_back(*i);
   }
 
-  vector(const vector& src) : _array(nullptr), _size(0), _capacity(0) {
+  vector(const vector& src) : _array(NULL), _size(0), _capacity(0) {
     *this = src;
   }
 
