@@ -23,4 +23,5 @@ else
     echo "$1 diff error : stl behaves differently"
 fi
 rm -rf ft std
+rm -rf a.out
 

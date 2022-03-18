@@ -1,6 +1,13 @@
 #!/bin/bash
 
-FILES="./vector/*.cpp"
+if [ $# -eq 0 ]
+then
+    FILES="./*/*.cpp"
+else
+    FILES="./$1/*.cpp"
+fi
+
+
 for f in $FILES
 do
     clang++ -Wall -Werror -Wextra -std=c++98 -D NS=ft -I ../ $f -I ./ && valgrind ./a.out > ft 2>/dev/null
