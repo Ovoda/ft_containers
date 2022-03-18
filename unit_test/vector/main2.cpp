@@ -16,8 +16,8 @@ main (void)
     }
 
   _v_default1 = _v_default0;
-  std::cout << test::print_vector (_v_default0) << std::endl;
-  std::cout << test::print_vector (_v_default1) << std::endl;
+  std::cout << test::print_ctn (_v_default0) << std::endl;
+  std::cout << test::print_ctn (_v_default1) << std::endl;
 
   std::cout << std::boolalpha << (_v_default0 == _v_default1) << std::endl;
   _v_default0.push_back (0);
@@ -32,8 +32,8 @@ main (void)
   _v_default1.push_back (2);
   _v_default1.push_back (3);
   _v_fill = _v_default1;
-  std::cout << test::print_vector (_v_fill) << std::endl;
-  std::cout << test::print_vector (_v_default1) << std::endl;
+  std::cout << test::print_ctn (_v_fill) << std::endl;
+  std::cout << test::print_ctn (_v_default1) << std::endl;
 
   while (!_v_default1.empty ())
     {
@@ -48,8 +48,8 @@ main (void)
   _v_default1.push_back (2);
   _v_default1.push_back (3);
   _v_fill = _v_default1;
-  std::cout << test::print_vector (_v_fill) << std::endl;
-  std::cout << test::print_vector (_v_default1) << std::endl;
+  std::cout << test::print_ctn (_v_fill) << std::endl;
+  std::cout << test::print_ctn (_v_default1) << std::endl;
 
   while (!_v_fill.empty ())
     {
