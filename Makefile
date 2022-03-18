@@ -6,7 +6,7 @@ CCFLAGS =
 
 UNAME_S := $(shell uname -s)
 ifeq ($(UNAME_S),Linux)
-	CCFLAGS += clang++ -g
+	CCFLAGS += clang++ -g -Wall -Werror -Wextra
 endif
 ifeq ($(UNAME_S),Darwin)
 	CCFLAGS += clang++ -fsanitize=address -g -Wall -Werror -Wextra
