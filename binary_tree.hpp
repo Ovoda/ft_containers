@@ -113,10 +113,10 @@ public:
   typedef node_type *node_pointer;
   typedef const node_type *node_const_pointer;
 
-  // TO DO remove new delete
   tree () : _root (NULL), _size (0)
   {
-    _end = new node_type (value_type ());
+    _end = _alloc.allocate(1);
+    _alloc.construct(_end, value_type());
     _end->_parent = NULL;
     _end->_left = NULL;
     _end->_right = NULL;
@@ -125,7 +125,8 @@ public:
   ~tree ()
   {
     delete_tree (_root);
-    delete _end;
+    _alloc.destroy(_end);
+    _alloc.deallocate(_end, 1);
   }
 
   tree &
