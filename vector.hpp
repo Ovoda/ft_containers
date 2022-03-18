@@ -30,7 +30,7 @@ public:
 
   explicit vector (size_type n, const value_type& val = value_type(),
                  const allocator_type& alloc = allocator_type())
-      : _array (NULL), _size (n), _capacity (n)
+      : _array (NULL), _size (n), _capacity (n), _alloc(alloc)
   {
     _array = _alloc.allocate (n);
     for (size_type i = 0; i < _size; i++)
@@ -43,7 +43,7 @@ public:
   vector (InputIterator first,
           typename ft::enable_if<!ft::is_integral<InputIterator>::value,
                                  InputIterator>::type last, const allocator_type& alloc = allocator_type())
-      : _array (NULL), _size (0), _capacity (0)
+      : _array (NULL), _size (0), _capacity (0), _alloc(alloc)
   {
     for (InputIterator i = first; i != last; i++)
       push_back (*i);
