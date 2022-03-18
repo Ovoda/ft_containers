@@ -26,21 +26,23 @@ public:
   typedef ptrdiff_t difference_type;
   typedef size_t size_type;
 
-  vector () : _array (NULL), _size (0), _capacity (0) {}
+  vector (const allocator_type& alloc = allocator_type()) : _array (NULL), _size (0), _capacity (0), _alloc(alloc) {}
 
-  explicit vector (size_type n, const value_type &val = value_type ())
+  explicit vector (size_type n, const value_type& val = value_type(),
+                 const allocator_type& alloc = allocator_type())
       : _array (NULL), _size (n), _capacity (n)
   {
-    _array = _alloc.allocate(n);
-    for (size_type i = 0; i < _size; i++) {
-      _alloc.construct(_array + i, val);
-    }
+    _array = _alloc.allocate (n);
+    for (size_type i = 0; i < _size; i++)
+      {
+        _alloc.construct (_array + i, val);
+      }
   }
 
   template <class InputIterator>
   vector (InputIterator first,
           typename ft::enable_if<!ft::is_integral<InputIterator>::value,
-                                 InputIterator>::type last)
+                                 InputIterator>::type last, const allocator_type& alloc = allocator_type())
       : _array (NULL), _size (0), _capacity (0)
   {
     for (InputIterator i = first; i != last; i++)
@@ -386,6 +388,10 @@ public:
       {
         push_back (*first);
       }
+  }
+
+  allocator_type get_allocator() const {
+    return (_alloc);
   }
 
 private:
