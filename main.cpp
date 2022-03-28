@@ -6,7 +6,7 @@
 /*   By: calide-n <calide-n@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/02 13:07:06 by hbaudet           #+#    #+#             */
-/*   Updated: 2022/03/28 13:00:59 by calide-n         ###   ########.fr       */
+/*   Updated: 2022/03/28 14:32:59 by calide-n         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,11 +41,11 @@ void print(vector<T> &lst) {
 class Awesome {
  public:
   Awesome(void) : _n(42) {
-    // std::cout << "Default constructor" << std::endl;
+    std::cout << "Default constructor" << std::endl;
   }  // should not happen too often or else there is a wrong use of allocator
      // (which calls the copy constructor)
   Awesome(int n) : _n(n) {
-    // std::cout << "Int constructor" << std::endl;
+    std::cout << "Int constructor" << std::endl;
     (void)n;
   }
   Awesome(Awesome const &rhs) : _n(42) { *this = rhs; }
@@ -111,7 +111,6 @@ void resize_tests(void) {
   std::cout << std::endl << "RESIZE TESTS" << std::endl;
   NAMESPACE::vector<T> test(12, 12);
 
-  std::cout << "s: " << test.size() << ", c: " << test.capacity() << std::endl;
   test.resize(72);
   std::cout << "s: " << test.size() << ", c: " << test.capacity() << std::endl;
   test.resize(100);
@@ -119,7 +118,7 @@ void resize_tests(void) {
   test.resize(4170);
   std::cout << "s: " << test.size() << ", c: " << test.capacity() << std::endl;
   test.resize(171, 12);
-  std::cout << "s: " << test.size() << ", c:" << test.capacity() << std::endl;
+  std::cout << "s: " << test.size() << ", c: " << test.capacity() << std::endl;
   test.resize(62);
   std::cout << "s: " << test.size() << ", c: " << test.capacity() << std::endl;
 }
@@ -285,11 +284,11 @@ int main() {
   erase_clear_tests<int>();
   max_size_tests();
   awesome_tests();
-  // push_pop_back_tests<Awesome>();
-  // resize_tests<Awesome>();
-  // insert_tests<Awesome>();
-  // reserve_tests<Awesome>();
-  // copy_swap_tests<Awesome>();
-  // reverse_it_tests<Awesome>();
-  // erase_clear_tests<Awesome>();
+  push_pop_back_tests<Awesome>();
+  resize_tests<Awesome>();
+  insert_tests<Awesome>();
+  reserve_tests<Awesome>();
+  copy_swap_tests<Awesome>();
+  reverse_it_tests<Awesome>();
+  erase_clear_tests<Awesome>();
 }

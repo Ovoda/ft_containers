@@ -88,20 +88,22 @@ class vector {
         pop_back();
       }
     } else if (n > _size) {
-      if (n > _capacity) {
-        if (_capacity * 2 > n) {
-          reserve(_capacity * 2);
-        } else {
-          reserve(n);
-        }
-        while (_size < n) {
-          push_back(val);
-        }
-      } else {
-        while (_size < n) {
-          push_back(val);
-        }
-      }
+      insert(end(), n - _size, val);
+      // if (n > _capacity) {
+      //   if (_capacity * 2 > n) {
+      //     reserve(_capacity * 2);
+      //   } else {
+      //     reserve(n);
+      //   }
+      //   while (_size < n) {
+      //     std::cout << "here" << std::endl;
+      //     _alloc.construct(&_array[_size++], val);
+      //   }
+      // } else {
+      //   while (_size < n) {
+      //     _alloc.construct(&_array[_size++], val);
+      //   }
+      // }
     }
   }
 
@@ -127,12 +129,10 @@ class vector {
 
   vector &operator=(const vector &x) {
     if (this != &x) {
-      if (x.size() < _capacity) {
-        for (size_t i = 0; i < _size; i++) {
-          _alloc.destroy(_array + i);
-        }
+      for (size_t i = 0; i < _size; i++) {
+        _alloc.destroy(_array + i);
       }
-      if (_capacity == 0) {
+      if (_capacity < x.size()) {
         _alloc.deallocate(_array, _capacity);
         _array = _alloc.allocate(x._size);
         _capacity = x._size;
@@ -189,10 +189,11 @@ class vector {
   }
 
   void insert(iterator position, size_type n, const value_type &val) {
+    if (n <= 0) return;
     int index = (position - begin());
     if (_size + n > _capacity) {
-      if (_capacity * 2 > _size + n) {
-        reserve(_capacity * 2);
+      if (_size * 2 > _size + n) {
+        reserve(_size * 2);
       } else {
         reserve(_size + n);
       }
