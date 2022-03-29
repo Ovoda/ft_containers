@@ -3,9 +3,10 @@
 
 #include <cstddef>
 #include <iostream>
-#include <iterator.hpp>
 #include <memory>
-#include <utils.hpp>
+
+#include "iterator.hpp"
+#include "utils.hpp"
 
 namespace ft {
 
@@ -43,7 +44,7 @@ class vector {
                                 InputIterator>::type last,
          const allocator_type &alloc = allocator_type())
       : _array(NULL), _size(0), _capacity(0), _alloc(alloc) {
-    _size = last - first;
+    _size = static_cast<size_type>(ft::distance(first, last));
     _capacity = _size;
     _array = _alloc.allocate(_size);
     for (int i = 0; first != last; first++, i++) {
@@ -215,7 +216,7 @@ class vector {
       iterator position, InputIterator first, InputIterator last,
       typename ft::enable_if<!ft::is_integral<InputIterator>::value>::type * =
           0) {
-    size_t n = last - first;
+    size_t n = ft::distance(first, last);
     int index = (position - begin());
     if (_size + n > _capacity) {
       if (_capacity * 2 > _size + n) {
@@ -318,8 +319,8 @@ bool operator!=(const vector<T> &lhs, const vector<T> &rhs) {
 
 template <class T>
 bool operator<(const vector<T> &lhs, const vector<T> &rhs) {
-  return (
-      lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end()));
+  return (ft::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(),
+                                      rhs.end()));
 }
 
 template <class T>

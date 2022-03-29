@@ -76,6 +76,7 @@
         "queue": "cpp",
         "ratio": "cpp",
         "set": "cpp",
-        "stack": "cpp"
+        "stack": "cpp",
+        "*.ipp": "cpp"
     }
 }

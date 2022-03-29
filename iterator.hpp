@@ -57,7 +57,10 @@ void advance(Iterator &it, Distance n) {
 template <class Iterator>
 typename iterator_traits<Iterator>::difference_type distance(Iterator first,
                                                              Iterator last) {
-  return first - last;
+  size_t size;
+  for (size = 0; first != last; first++, size++)
+    ;
+  return (size);
 }
 
 /* Radom access iterator */
