@@ -68,10 +68,10 @@ class map {
 
   map &operator=(const map &x) {
     if (this != &x) {
+      _key_comp = x._key_comp;
+      _alloc = x._alloc;
       clear();
-      for (const_iterator _ite = x.begin(); _ite != x.end(); _ite++) {
-        insert(*_ite);
-      }
+      insert(x.begin(), x.end());
     }
     return *this;
   }
