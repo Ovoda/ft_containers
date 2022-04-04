@@ -1,28 +1,22 @@
-#include <tree.hpp>
+#include <list>
+#include <map.hpp>
+#include <map>
 
-int main(void) {
-  red_black_tree<int> _t;
+int main() {
+  std::list<ft::pair<int, int> > lst;
+  unsigned int lst_size = 7;
+  for (unsigned int i = 0; i < lst_size; ++i)
+    lst.push_back(T3(lst_size - i, i));
 
-  _t.insert(1);
-  _t.insert(2);
-  _t.insert(3);
-  _t.insert(4);
-  _t.insert(5);
-  _t.insert(6);
-  _t.insert(7);
-  _t.insert(8);
-  _t.insert(9);
+  ft::map<int, int> mp(lst.begin(), lst.end());
+  ft::map<int, int>::iterator it = mp.begin(), ite = mp.end();
 
-  // _t.delete_node(9);
-  // _t.delete_node(8);
-  // _t.delete_node(7);
-  // _t.delete_node(6);
-  // _t.delete_node(5);
-  _t.delete_node(4);
-  // _t.delete_node(3);
-  // _t.delete_node(2);
-  // _t.delete_node(1);
+  ft::map<int, int> mp_range(it, --(--ite));
+  for (int i = 0; it != ite; ++it) it->second = ++i * 5;
 
-  _t.print2D();
+  it = mp.begin();
+  ite = --(--mp.end());
+  ft::map<int, int> mp_copy(mp);
+  for (int i = 0; it != ite; ++it) it->second = ++i * 7;
   return (0);
 }

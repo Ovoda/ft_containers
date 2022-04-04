@@ -78,6 +78,7 @@
         "set": "cpp",
         "stack": "cpp",
         "*.ipp": "cpp",
-        "csignal": "cpp"
+        "csignal": "cpp",
+        "filesystem": "cpp"
     }
 }

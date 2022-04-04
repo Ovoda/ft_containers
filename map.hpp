@@ -1,8 +1,8 @@
 #ifndef MAP_HPP
 #define MAP_HPP
 
-#include <binary_tree.hpp>
 #include <binary_tree_iterator.hpp>
+#include <tree.hpp>
 #include <utils.hpp>
 
 namespace ft {
@@ -21,7 +21,7 @@ class map {
   typedef typename allocator_type::const_reference const_reference;
   typedef typename allocator_type::const_pointer const_pointer;
   typedef ft::tree_iterator<value_type> iterator;
-  typedef ft::tree_const_iterator<value_type> const_iterator;
+  typedef ft::tree_iterator<value_type> const_iterator;
   typedef ft::reverse_iterator<iterator> reverse_iterator;
   typedef ft::reverse_iterator<const_iterator> const_reverse_iterator;
   typedef ptrdiff_t difference_type;
@@ -44,7 +44,7 @@ class map {
   };
 
  private:
-  typedef tree<value_type, key_compare> tree_type;
+  typedef red_black_tree<value_type> tree_type;
 
  public:
   explicit map(const key_compare &comp = key_compare(),
@@ -105,7 +105,7 @@ class map {
   }
 
   pair<iterator, bool> insert(const value_type &val) {
-    ft::pair<typename tree_type::node_pointer, bool> _ret = _tree.insert(val);
+    ft::pair<typename tree_type::node_ptr, bool> _ret = _tree.insert(val);
     return (ft::make_pair(iterator(_ret.first), _ret.second));
   }
 
@@ -121,28 +121,31 @@ class map {
     }
   }
 
-  void erase(iterator position) { _tree.remove(position->first); }
+  void erase(iterator position) { _tree.delete_node(position->first); }
 
-  size_type erase(const key_type &k) { return (_tree.remove(k)); }
+  size_type erase(const key_type &k) {
+    _tree.delete_node(k);
+    return (1);
+  }
 
   void erase(iterator first, iterator last) {
     for (; first != last;) {
       key_type _v = first->first;
       first++;
-      _tree.remove(_v);
+      _tree.delete_node(_v);
     }
   }
 
   void swap(map &x) { _tree.swap(x._tree); }
 
   iterator find(const key_type &k) {
-    typename tree_type::node_pointer ret = _tree.search(k);
+    typename tree_type::node_ptr ret = _tree.search(k);
     if (ret == NULL) return end();
     return (iterator(ret));
   }
 
   const_iterator find(const key_type &k) const {
-    typename tree_type::node_pointer ret = _tree.search(k);
+    typename tree_type::node_ptr ret = _tree.search(k);
     if (ret == NULL) return end();
     return (const_iterator(ret));
   }
@@ -203,8 +206,9 @@ class map {
 
   allocator_type get_allocator() const { return _alloc; }
 
- private:
   tree_type _tree;
+
+ private:
   allocator_type _alloc;
   key_compare _key_comp;
 };
