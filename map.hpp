@@ -139,18 +139,20 @@ class map {
   void swap(map &x) { _tree.swap(x._tree); }
 
   iterator find(const key_type &k) {
-    typename tree_type::node_ptr ret = _tree.search(k);
+    typename tree_type::node_ptr ret = _tree.find_node(k);
     if (ret == NULL) return end();
     return (iterator(ret));
   }
 
   const_iterator find(const key_type &k) const {
-    typename tree_type::node_ptr ret = _tree.search(k);
+    typename tree_type::node_ptr ret = _tree.find_node(k);
     if (ret == NULL) return end();
     return (const_iterator(ret));
   }
 
-  size_type count(const key_type &k) const { return (_tree.search(k)) ? 1 : 0; }
+  size_type count(const key_type &k) const {
+    return (_tree.find_node(k)) ? 1 : 0;
+  }
 
   void clear() { _tree.clear(); }
 

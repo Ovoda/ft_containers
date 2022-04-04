@@ -52,8 +52,8 @@ class red_black_tree {
   typedef Node<T> *node_ptr;
   typedef Node<T> node;
   typedef T data_type;
-  node_ptr _leaf;
   int _size;
+  node_ptr _leaf;
 
  private:
   node_ptr _root;
@@ -63,7 +63,7 @@ class red_black_tree {
  public:
   red_black_tree() {
     _size = 0;
-    _leaf = create_node_ptr(data_type(), NULL, NULL, NULL, BLACK, true);
+    _leaf = create_leaf();
     _root = _leaf;
     _end = create_node_ptr(data_type(), _root, _root, _root, BLACK, true);
     _root->parent = _end;
@@ -75,22 +75,12 @@ class red_black_tree {
       _alloc.destroy(_leaf);
       _alloc.deallocate(_leaf, 1);
     }
+
     _alloc.destroy(_end);
     _alloc.deallocate(_end, 1);
   }
 
   size_t max_size() const { return _alloc.max_size(); }
-
-  red_black_tree &operator=(const red_black_tree &src) {
-    if (this != &src) {
-      _leaf = src._leaf;
-      _size = src._size;
-      _root = src._root;
-      _end = src._end;
-      _alloc = src._alloc;
-    }
-    return (*this);
-  }
 
   bool is_empty() const { return (_size == 0); }
 
@@ -104,16 +94,24 @@ class red_black_tree {
   node_ptr end() const { return _end; }
 
   void clear(node_ptr curr) {
-    if (_size > 0 && curr != NULL && !curr->is_leaf) {
-      clear(curr->left);
-      clear(curr->right);
-      _alloc.destroy(curr);
-      _alloc.deallocate(curr, 1);
-      _size--;
+    if (curr == NULL || curr->is_leaf || _size <= 0) {
+      return;
     }
+
+    clear(curr->left);
+    clear(curr->right);
+    _alloc.destroy(curr);
+    _alloc.deallocate(curr, 1);
+
+    _size--;
+
+    curr = NULL;
   }
 
-  void clear() { clear(_root); }
+  void clear() {
+    clear(_root);
+    _root = _leaf;
+  }
 
   void print2D() { print2DUtil(_root, 0); }
 
@@ -124,8 +122,8 @@ class red_black_tree {
     if (new_node == NULL) {
       return (ft::pair<node_ptr, bool>(new_node, false));
     }
-    _size++;
 
+    _size++;
     if (new_node->parent == _end) {
       new_node->color = BLACK;
       return (ft::pair<node_ptr, bool>(new_node, true));
@@ -135,21 +133,44 @@ class red_black_tree {
       return (ft::pair<node_ptr, bool>(new_node, true));
     }
     insertFix(new_node);
+    reset_root();
     return (ft::pair<node_ptr, bool>(new_node, true));
   }
 
-  node_ptr find_node(node_ptr curr, typename data_type::first_type key) {
+  node_ptr find_node(node_ptr curr, typename data_type::first_type key) const {
     if (curr->data.first == key || curr->is_leaf) {
       return (curr);
     }
-    if (curr->data.first < key) {
+    if (key < curr->data.first) {
+      return (find_node(curr->left, key));
+    } else if ((key > curr->data.first)) {
       return (find_node(curr->right, key));
     }
-    return (find_node(curr->left, key));
+    return NULL;
   }
 
+  node_ptr find_node(typename data_type::first_type key) const {
+    return (find_node(_root, key));
+  }
   void delete_node(typename data_type::first_type key) {
     delete_node_helper(_root, key);
+  }
+
+  void swap(red_black_tree &x) {
+    size_t tmp_size = _size;
+    _size = x._size;
+    x._size = tmp_size;
+
+    node_ptr tmp = _root;
+    _root = x._root;
+    x._root = tmp;
+
+    tmp = _end;
+    _end = x._end;
+    x._end = tmp;
+
+    if (_root) _root->parent = _end;
+    if (x._root) x._root->parent = x._end;
   }
 
  private:
@@ -177,6 +198,15 @@ class red_black_tree {
     return (new_node);
   }
 
+  node_ptr create_leaf(data_type data = data_type(), node_ptr parent = NULL,
+                       node_ptr left = NULL, node_ptr right = NULL,
+                       int color = BLACK, bool is_leaf = true) {
+    node_ptr new_node = _alloc.allocate(1);
+    _alloc.construct(new_node,
+                     create_node(data, parent, left, right, color, is_leaf));
+    return (new_node);
+  }
+
   node_ptr create_node_ptr(data_type data, node_ptr parent, node_ptr left,
                            node_ptr right, int color = RED,
                            bool is_leaf = false) {
@@ -187,18 +217,6 @@ class red_black_tree {
     return (new_node);
   }
 
-  /* Search helper*/
-
-  node_ptr search_tree_helper(node_ptr curr, data_type key) {
-    if (curr->is_leaf || key == curr->data) {
-      return curr;
-    }
-    if (key < curr->data) {
-      return (search_tree_helper(curr->left, key));
-    }
-    return (search_tree_helper(curr->right, key));
-  }
-
   /* Insertion helpers */
 
   node_ptr recursive_insert(data_type data, node_ptr &curr, node_ptr parent) {
@@ -206,12 +224,12 @@ class red_black_tree {
       curr = create_node_ptr(data, parent, _leaf, _leaf);
       return curr;
     }
-    if (data < curr->data) {
+    if (data.first < curr->data.first) {
       return recursive_insert(data, curr->left, curr);
-    } else if (data > curr->data) {
+    } else if (data.first > curr->data.first) {
       return recursive_insert(data, curr->right, curr);
     }
-    return NULL;
+    return curr;
   }
 
   void insertFix(node_ptr curr) {
@@ -297,6 +315,7 @@ class red_black_tree {
       delete_fix(node_anchor);
     }
     _size--;
+    reset_root();
   }
 
   void delete_fix(node_ptr curr) {
@@ -406,6 +425,14 @@ class red_black_tree {
     }
     y->left = curr;
     curr->parent = y;
+  }
+
+  void reset_root() {
+    _alloc.destroy(_end);
+    _alloc.deallocate(_end, 1);
+    _end =
+        create_node_ptr(maximum(_root)->data, _root, _root, _root, BLACK, true);
+    _root->parent = _end;
   }
 };
 

@@ -50,17 +50,19 @@ class tree_iterator : public iterator<ft::bidirectional_iterator_tag, T> {
   }
 
   iterator_type &operator++() {
-    if (!_ptr || _ptr->is_leaf) return *this;
-
-    if (!_ptr->right->is_leaf) {
-      _ptr = minimum(_ptr->right);
-      return *this;
+    if (_ptr->right == _ptr->left && _ptr->parent->parent == _ptr) {
+      _ptr = maximum(_ptr->right);
+    } else if (!_ptr->right->is_leaf) {
+      _ptr = _ptr->right;
+      while (!_ptr->left->is_leaf) _ptr = _ptr->left;
+    } else {
+      node_ptr y = _ptr->parent;
+      while (_ptr == y->right) {
+        _ptr = y;
+        y = y->parent;
+      }
+      if (_ptr->right != y) _ptr = y;
     }
-
-    while (!_ptr->parent->is_leaf && _ptr == _ptr->parent->right) {
-      _ptr = _ptr->parent;
-    }
-    _ptr = _ptr->parent;
     return *this;
   }
 
@@ -71,17 +73,20 @@ class tree_iterator : public iterator<ft::bidirectional_iterator_tag, T> {
   }
 
   iterator_type &operator--() {
-    if (!_ptr || _ptr->is_leaf) return *this;
-
     if (!_ptr->left->is_leaf) {
-      _ptr = maximum(_ptr->left);
-      return *this;
+      _ptr = _ptr->left;
+      while (!_ptr->right->is_leaf) _ptr = _ptr->right;
+    } else {
+      node_ptr y = _ptr->parent;
+      while (_ptr == y->left) {
+        _ptr = y;
+        y = y->parent;
+      }
+      if (_ptr->left != y) _ptr = y;
+      // if (_ptr->right == _ptr->left && _ptr->parent->parent == _ptr) {
+      //   _ptr = maximum(_ptr->right);
+      // }
     }
-
-    while (!_ptr->parent->is_leaf && _ptr == _ptr->parent->left) {
-      _ptr = _ptr->parent;
-    }
-    _ptr = _ptr->parent;
     return *this;
   }
 
