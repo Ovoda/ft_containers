@@ -1,10 +1,9 @@
-#include <map.hpp>
+
+#include <map>
+#include <set.hpp>
+#include <tree.hpp>
 
 int main() {
-  ft::map<int, int> m;
-  for (int i = 0; i < 10; i++) {
-    m[i] = i;
-  }
-  m._tree.print2D();
+  ft::set<int> _s;
   return (0);
 }

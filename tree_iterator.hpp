@@ -2,7 +2,7 @@
 #define BINARY_TREE_ITERATOR_HPP
 
 #include <iterator.hpp>
-#include <tree.hpp>
+#include <node.hpp>
 
 namespace ft {
 
@@ -26,13 +26,13 @@ class tree_iterator : public iterator<ft::bidirectional_iterator_tag, T> {
                             Node<T> >::iterator_category iterator_category;
 
   tree_iterator() : _ptr(NULL) {}
-  tree_iterator(const iterator_type &src) : _ptr(src._ptr) {}
   tree_iterator(const node_ptr ptr) : _ptr(ptr) {}
+  tree_iterator(const tree_iterator<T> &src) { *this = src; }
   ~tree_iterator() {}
 
   node_ptr base() const { return _ptr; }
 
-  iterator_type &operator=(const iterator_type &src) {
+  tree_iterator &operator=(const tree_iterator &src) {
     if (this != &src) {
       _ptr = src._ptr;
     }
@@ -51,13 +51,17 @@ class tree_iterator : public iterator<ft::bidirectional_iterator_tag, T> {
 
   iterator_type &operator++() {
     if (_ptr->right == _ptr->left && _ptr->parent->parent == _ptr) {
-      _ptr = maximum(_ptr->right);
-    } else if (!_ptr->right->is_leaf) {
+      if (!_ptr->right) {
+        _ptr = _ptr->parent;
+      } else {
+        _ptr = maximum(_ptr->right);
+      }
+    } else if (_ptr->right) {
       _ptr = _ptr->right;
-      while (!_ptr->left->is_leaf) _ptr = _ptr->left;
+      while (_ptr->left) _ptr = _ptr->left;
     } else {
       node_ptr y = _ptr->parent;
-      while (_ptr == y->right) {
+      while (y && _ptr == y->right) {
         _ptr = y;
         y = y->parent;
       }
@@ -73,9 +77,9 @@ class tree_iterator : public iterator<ft::bidirectional_iterator_tag, T> {
   }
 
   iterator_type &operator--() {
-    if (!_ptr->left->is_leaf) {
+    if (_ptr->left) {
       _ptr = _ptr->left;
-      while (!_ptr->right->is_leaf) _ptr = _ptr->right;
+      while (_ptr->right) _ptr = _ptr->right;
     } else {
       node_ptr y = _ptr->parent;
       while (_ptr == y->left) {
@@ -83,9 +87,6 @@ class tree_iterator : public iterator<ft::bidirectional_iterator_tag, T> {
         y = y->parent;
       }
       if (_ptr->left != y) _ptr = y;
-      // if (_ptr->right == _ptr->left && _ptr->parent->parent == _ptr) {
-      //   _ptr = maximum(_ptr->right);
-      // }
     }
     return *this;
   }
