@@ -1,0 +1,124 @@
+
+// #include <map>
+// #include <set.hpp>
+// #include <set>
+
+// #ifndef STD
+// #define NAMESPACE ft
+// #else
+// #define NAMESPACE std
+// #endif
+
+// template <class T>
+// void print_set(const NAMESPACE::set<T> &_s) {
+//   NAMESPACE::set<int>::iterator bit = _s.begin();
+//   NAMESPACE::set<int>::const_iterator cbit = _s.begin();
+//   NAMESPACE::set<int>::iterator eit = _s.end();
+//   NAMESPACE::set<int>::const_iterator ceit = _s.end();
+
+//   std::cout << "size: " << _s.size() << std::endl;
+//   std::cout << "max_size: " << _s.max_size() << std::endl;
+//   std::cout << "empty: " << std::boolalpha << _s.empty() << std::endl;
+
+//   for (; bit != eit; bit++) {
+//     std::cout << *bit << " ";
+//   }
+//   std::cout << std::endl;
+//   for (; cbit != ceit; cbit++) {
+//     std::cout << *cbit << " ";
+//   }
+//   std::cout << std::endl;
+// }
+
+// template <class T>
+// void constructor_test(const typename NAMESPACE::set<T> _s) {
+//   NAMESPACE::set<T> _copy;
+//   _copy = _s;
+//   NAMESPACE::set<int> _range(_copy);
+//   print_set(_s);
+//   print_set(_copy);
+//   print_set(_range);
+// }
+
+// template <class T>
+// void erase_test(typename NAMESPACE::set<T> _s) {
+//   typename NAMESPACE::set<T>::iterator it = _s.begin();
+//   for (int i = 0; i < 3; i++) {
+//     _s.erase(it++);
+//   }
+//   for (int i = 0; i < 10; i++) {
+//     _s.erase(*it++);
+//   }
+//   _s.erase(_s.begin(), _s.end());
+//   print_set(_s);
+// }
+
+// template <class T>
+// void swap_test(typename NAMESPACE::set<T> _s) {
+//   typename NAMESPACE::set<T> _copy = _s;
+//   _copy.erase(++(++(_copy.begin())), _copy.end());
+
+//   std::cout << "_Copy :" << std::endl;
+//   print_set(_copy);
+//   std::cout << "_S :" << std::endl;
+//   print_set(_s);
+//   _copy.swap(_s);
+//   std::cout << "_Copy :" << std::endl;
+//   print_set(_copy);
+//   std::cout << "_S :" << std::endl;
+//   print_set(_s);
+// }
+
+// int main() {
+//   NAMESPACE::set<int> _s;
+//   for (int i = 0; i <= 20; i++) {
+//     _s.insert(i - 10);
+//   }
+//   // constructor_test(_s);
+//   // erase_test(_s);
+//   swap_test(_s);
+//   return (0);
+// }
+
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   operator=_main.cpp                                 :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: hbaudet <hbaudet@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2020/12/02 13:07:06 by hbaudet           #+#    #+#             */
+/*   Updated: 2021/01/20 10:24:27 by hbaudet          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include <set.hpp>
+#include <set>
+// #include "test_utils.hpp"
+
+#ifndef STD
+#define NAMESPACE ft
+#else
+#define NAMESPACE std
+#endif
+
+using namespace NAMESPACE;
+
+template <class T>
+void print(set<T>& lst) {
+  for (typename set<T>::iterator it = lst.begin(); it != lst.end(); it++)
+    std::cout << it->first << " => " << it->second << '\n';
+}
+
+int main() {
+  int myints[] = {12, 82, 37, 64, 15};
+  set<int> first(myints, myints + 5);  // set with 5 ints
+  set<int> second;                     // empty set
+
+  second = first;      // now second contains the 5 ints
+  first = set<int>();  // and first is empty
+
+  std::cout << "Size of first: " << int(first.size()) << '\n';
+  std::cout << "Size of second: " << int(second.size()) << '\n';
+  return 0;
+}

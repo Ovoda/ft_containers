@@ -80,6 +80,7 @@
         "*.ipp": "cpp",
         "csignal": "cpp",
         "filesystem": "cpp",
-        "version": "cpp"
+        "version": "cpp",
+        "__functional_03": "cpp"
     }
 }

@@ -17,7 +17,7 @@ class set {
  public:
   typedef T key_type;
   typedef T value_type;
-  typedef red_black_tree<value_type> tree_type;
+  typedef red_black_tree<value_type, Compare> tree_type;
   typedef Compare key_compare;
   typedef Compare value_compare;
   typedef Alloc allocator_type;
@@ -106,12 +106,105 @@ class set {
     }
   }
 
-  red_black_tree<value_type> _tree;
+  void swap(set& x) {
+    _tree.swap(x._tree);
+    key_compare tmp = _comp;
+    _comp = x._comp;
+    x._comp = tmp;
+
+    allocator_type tmp_alloc = _alloc;
+    _alloc = x._alloc;
+    x._alloc = tmp_alloc;
+  }
+
+  void clear() { _tree.clear(); }
+
+  key_compare key_comp() const { return _comp; }
+  value_compare value_comp() const { return key_comp(); }
+
+  iterator find(const value_type& val) const {
+    return iterator(_tree.searchTree(val));
+  }
+
+  size_type count(const value_type& val) const {
+    if (_tree.count(val) != NULL) {
+      return 1;
+    }
+    return 0;
+  }
+
+  iterator lower_bound(const value_type& val) const {
+    iterator _ite = begin();
+    for (; _ite != end(); ++_ite) {
+      if (!_comp(*_ite, val)) {
+        break;
+      }
+    }
+    return _ite;
+  }
+
+  iterator upper_bound(const value_type& val) const {
+    iterator _ite = begin();
+    for (; _ite != end(); ++_ite) {
+      if (_comp(val, *_ite)) {
+        break;
+      }
+    }
+    return _ite;
+  }
+
+  pair<iterator, iterator> equal_range(const value_type& val) const {
+    return (pair<iterator, iterator>(lower_bound(val), upper_bound(val)));
+  }
+
+  allocator_type get_allocator() const { return _alloc; }
+
+  // TODO put back to private
+  red_black_tree<value_type, key_compare> _tree;
 
  private:
   key_compare _comp;
   allocator_type _alloc;
 };
+
+template <class Key, class Compare, class Alloc>
+bool operator==(const ft::set<Key, Compare, Alloc>& lhs,
+                const ft::set<Key, Compare, Alloc>& rhs) {
+  if (lhs.size() == rhs.size()) {
+    return (ft::equal(lhs.begin(), lhs.end(), rhs.begin()));
+  }
+  return (false);
+}
+template <class Key, class Compare, class Alloc>
+bool operator!=(const ft::set<Key, Compare, Alloc>& lhs,
+                const ft::set<Key, Compare, Alloc>& rhs) {
+  return !(lhs == rhs);
+}
+
+template <class Key, class Compare, class Alloc>
+bool operator<(const ft::set<Key, Compare, Alloc>& lhs,
+               const ft::set<Key, Compare, Alloc>& rhs) {
+  return (ft::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(),
+                                      rhs.end()));
+}
+
+template <class Key, class Compare, class Alloc>
+bool operator<=(const ft::set<Key, Compare, Alloc>& lhs,
+                const ft::set<Key, Compare, Alloc>& rhs) {
+  return !(rhs < lhs);
+}
+
+template <class Key, class Compare, class Alloc>
+bool operator>(const ft::set<Key, Compare, Alloc>& lhs,
+               const ft::set<Key, Compare, Alloc>& rhs) {
+  return (rhs < lhs);
+}
+
+template <class Key, class Compare, class Alloc>
+bool operator>=(const ft::set<Key, Compare, Alloc>& lhs,
+                const ft::set<Key, Compare, Alloc>& rhs) {
+  return !(rhs > lhs);
+}
 
 }  // namespace ft
 #endif

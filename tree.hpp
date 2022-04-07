@@ -1,12 +1,14 @@
 #ifndef TREE_HPP
 #define TREE_HPP
 
+#include <string>
 #include <tree_iterator.hpp>
+#include <typeinfo>
 #include <utils.hpp>
 
 namespace ft {
 
-template <class T>
+template <class T, class Compare = less<T> >
 class red_black_tree {
  public:
   typedef Node<T> *node_ptr;
@@ -14,9 +16,11 @@ class red_black_tree {
   typedef const_tree_iterator<T> iterator;
   typedef const_tree_iterator<T> const_iterator;
   typedef T data_type;
+  typedef Compare key_compare;
 
  public:
-  red_black_tree() : _root(NULL), _size(0) {
+  red_black_tree(const key_compare &comp = key_compare())
+      : _root(NULL), _size(0), _comp(comp) {
     _end = _malloc_node();
     _end->parent = _root;
     _end->right = _root;
@@ -30,6 +34,8 @@ class red_black_tree {
 
   red_black_tree &operator=(const red_black_tree &src) {
     if (this != &src) {
+      _alloc = src._alloc;
+      _comp = src._comp;
       clear();
       const_iterator it = src.begin();
       for (; it != src.end(); it++) {
@@ -59,7 +65,35 @@ class red_black_tree {
   iterator end() { return iterator(_end); }
   const_iterator end() const { return const_iterator(_end); }
 
-  node_ptr searchTree(int k) { return searchTreeHelper(this->_root, k); }
+  node_ptr searchTree(int k) const {
+    node_ptr found = searchTreeHelper(this->_root, k);
+    if (!found) {
+      return _end;
+    }
+    return found;
+  }
+
+  node_ptr count(int k) const {
+    node_ptr found = searchTreeHelper(this->_root, k);
+    if (!found) {
+      return NULL;
+    }
+    return found;
+  }
+
+  void swap(red_black_tree &x) {
+    node_ptr tmp = _root;
+    _root = x._root;
+    x._root = tmp;
+
+    size_t size_tmp = _size;
+    _size = x._size;
+    x._size = size_tmp;
+
+    tmp = _end;
+    _end = x._end;
+    x._end = tmp;
+  }
 
   void leftRotate(node_ptr x) {
     node_ptr y = x->right;
@@ -115,12 +149,13 @@ class red_black_tree {
 
     while (x != NULL) {
       y = x;
-      if (node->data < x->data) {
+      if (_comp(node->data, x->data)) {
         x = x->left;
-      } else if (node->data > x->data) {
+      } else if (_comp(x->data, node->data)) {
         x = x->right;
       } else {
-        return (pair<iterator, bool>(iterator(NULL), false));
+        _free_node(node);
+        return (pair<iterator, bool>(iterator(x), false));
       }
     }
 
@@ -132,7 +167,7 @@ class red_black_tree {
       _end->right = _root;
       _end->left = _root;
       _end->parent = _root;
-    } else if (node->data < y->data) {
+    } else if (_comp(node->data, y->data)) {
       y->left = node;
     } else {
       y->right = node;
@@ -179,6 +214,7 @@ class red_black_tree {
   node_ptr _end;
   size_t _size;
   std::allocator<Node<T> > _alloc;
+  key_compare _comp;
 
   void _free_node(node_ptr curr) {
     _alloc.destroy(curr);
@@ -195,12 +231,12 @@ class red_black_tree {
     return new_node;
   }
 
-  node_ptr searchTreeHelper(node_ptr node, data_type key) {
+  node_ptr searchTreeHelper(node_ptr node, data_type key) const {
     if (node == NULL || key == node->data) {
       return node;
     }
 
-    if (key < node->data) {
+    if (_comp(key, node->data)) {
       return searchTreeHelper(node->left, key);
     }
     return searchTreeHelper(node->right, key);
@@ -295,7 +331,7 @@ class red_black_tree {
         z = node;
       }
 
-      if (node->data <= key) {
+      if (!_comp(key, node->data)) {
         node = node->right;
       } else {
         node = node->left;
@@ -303,7 +339,6 @@ class red_black_tree {
     }
 
     if (z == NULL) {
-      std::cout << "Key not found in the tree" << std::endl;
       return false;
     }
 
@@ -392,6 +427,7 @@ class red_black_tree {
     clear_helper(curr->left);
     clear_helper(curr->right);
     _free_node(curr);
+    _size--;
     curr = NULL;
   }
 };

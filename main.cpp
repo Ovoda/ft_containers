@@ -1,5 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main.cpp                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: calide-n <calide-n@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2020/12/02 13:07:06 by hbaudet           #+#    #+#             */
+/*   Updated: 2022/04/07 22:01:02 by calide-n         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
-#include <map>
 #include <set.hpp>
 #include <set>
 
@@ -9,56 +19,36 @@
 #define NAMESPACE std
 #endif
 
-template <class T>
-void print_set(const NAMESPACE::set<T> &_s) {
-  NAMESPACE::set<int>::iterator bit = _s.begin();
-  NAMESPACE::set<int>::const_iterator cbit = _s.begin();
-  NAMESPACE::set<int>::iterator eit = _s.end();
-  NAMESPACE::set<int>::const_iterator ceit = _s.end();
-
-  std::cout << "size: " << _s.size() << std::endl;
-  std::cout << "max_size: " << _s.max_size() << std::endl;
-  std::cout << "empty: " << std::boolalpha << _s.empty() << std::endl;
-
-  for (; bit != eit; bit++) {
-    std::cout << *bit << " ";
-  }
-  std::cout << std::endl;
-  for (; cbit != ceit; cbit++) {
-    std::cout << *cbit << " ";
-  }
-  std::cout << std::endl;
-}
+using namespace NAMESPACE;
 
 template <class T>
-void constructor_test(const typename NAMESPACE::set<T> &_s) {
-  NAMESPACE::set<T> _copy;
-  _copy = _s;
-  NAMESPACE::set<int> _range(_copy);
-  print_set(_s);
-  print_set(_copy);
-  print_set(_range);
-}
-
-template <class T>
-void erase_test(typename NAMESPACE::set<T> &_s) {
-  typename NAMESPACE::set<T>::iterator it = _s.begin();
-  for (int i = 0; i < 3; i++) {
-    _s.erase(it++);
-  }
-  for (int i = 0; i < 10; i++) {
-    _s.erase(*it++);
-  }
-  _s.erase(_s.begin(), _s.end());
-  print_set(_s);
+void print(set<T>& lst) {
+  for (typename set<T>::iterator it = lst.begin(); it != lst.end(); it++)
+    std::cout << it->first << " => " << it->second << '\n';
 }
 
 int main() {
-  NAMESPACE::set<int> _s;
-  for (int i = 0; i <= 20; i++) {
-    _s.insert(i - 10);
-  }
-  // constructor_test(_s);
-  erase_test(_s);
-  return (0);
+  set<int> myset;
+  set<int>::iterator it;
+  pair<set<int>::iterator, bool> ret;
+
+  // set some initial values:
+  for (int i = 1; i <= 5; ++i) myset.insert(i * 10);  // set: 10 20 30 40 50
+
+  ret = myset.insert(20);  // no new element inserted
+
+  if (ret.second == false) it = ret.first;  // "it" now points to element 20
+
+  myset.insert(it, 25);  // max efficiency inserting
+  myset.insert(it, 24);  // max efficiency inserting
+  myset.insert(it, 26);  // no max efficiency inserting
+
+  int myints[] = {5, 10, 15};  // 10 already in set, not inserted
+  myset.insert(myints, myints + 3);
+
+  std::cout << "myset contains:";
+  for (it = myset.begin(); it != myset.end(); ++it) std::cout << ' ' << *it;
+  std::cout << '\n';
+
+  return 0;
 }

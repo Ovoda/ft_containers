@@ -26,7 +26,7 @@ class tree_iterator : public iterator<ft::bidirectional_iterator_tag, T> {
                             Node<T> >::iterator_category iterator_category;
 
   tree_iterator() : _ptr(NULL) {}
-  tree_iterator(const node_ptr ptr) : _ptr(ptr) {}
+  tree_iterator(const node_ptr &ptr) : _ptr(ptr) {}
   tree_iterator(const tree_iterator &src) : _ptr(src._ptr) {}
   ~tree_iterator() {}
 
@@ -118,8 +118,8 @@ class const_tree_iterator : public iterator<ft::bidirectional_iterator_tag, T> {
                             Node<T> >::iterator_category iterator_category;
 
   const_tree_iterator() : _ptr(NULL) {}
-  const_tree_iterator(const node_ptr ptr) : _ptr(ptr) {}
-  const_tree_iterator(const tree_iterator<T> &src) : _ptr(src.base()) {}
+  const_tree_iterator(const node_ptr &ptr) : _ptr(ptr) {}
+  const_tree_iterator(const tree_iterator<T> &src) : _ptr(src._ptr) {}
   const_tree_iterator(const const_tree_iterator &src) : _ptr(src._ptr) {}
   ~const_tree_iterator() {}
 
@@ -177,11 +177,11 @@ class const_tree_iterator : public iterator<ft::bidirectional_iterator_tag, T> {
     return *this;
   }
 
-  bool operator==(const const_tree_iterator &_ite2) {
+  bool operator==(const const_tree_iterator &_ite2) const {
     return (base() == _ite2.base());
   }
 
-  bool operator!=(const const_tree_iterator &_ite2) {
+  bool operator!=(const const_tree_iterator &_ite2) const {
     return (base() != _ite2.base());
   }
 
