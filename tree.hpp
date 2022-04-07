@@ -13,7 +13,7 @@ class red_black_tree {
  public:
   typedef Node<T> *node_ptr;
   typedef Node<T> node;
-  typedef const_tree_iterator<T> iterator;
+  typedef tree_iterator<T> iterator;
   typedef const_tree_iterator<T> const_iterator;
   typedef T data_type;
   typedef Compare key_compare;
@@ -65,7 +65,7 @@ class red_black_tree {
   iterator end() { return iterator(_end); }
   const_iterator end() const { return const_iterator(_end); }
 
-  node_ptr searchTree(int k) const {
+  node_ptr searchTree(data_type k) const {
     node_ptr found = searchTreeHelper(this->_root, k);
     if (!found) {
       return _end;
@@ -73,8 +73,8 @@ class red_black_tree {
     return found;
   }
 
-  node_ptr count(int k) const {
-    node_ptr found = searchTreeHelper(this->_root, k);
+  node_ptr count(data_type k) const {
+    node_ptr found = searchTreeHelper(_root, k);
     if (!found) {
       return NULL;
     }
@@ -232,14 +232,15 @@ class red_black_tree {
   }
 
   node_ptr searchTreeHelper(node_ptr node, data_type key) const {
-    if (node == NULL || key == node->data) {
+    if (node == NULL) {
       return node;
     }
-
     if (_comp(key, node->data)) {
       return searchTreeHelper(node->left, key);
+    } else if (_comp(node->data, key)) {
+      return searchTreeHelper(node->right, key);
     }
-    return searchTreeHelper(node->right, key);
+    return node;
   }
 
   void deleteFix(node_ptr x) {
@@ -324,21 +325,11 @@ class red_black_tree {
   }
 
   bool deleteNodeHelper(node_ptr node, data_type key) {
-    node_ptr z = NULL;
+    // TODO are we sure about this ?
+    node_ptr z = searchTreeHelper(node, key);
     node_ptr x, y;
-    while (node != NULL) {
-      if (node->data == key) {
-        z = node;
-      }
 
-      if (!_comp(key, node->data)) {
-        node = node->right;
-      } else {
-        node = node->left;
-      }
-    }
-
-    if (z == NULL) {
+    if (z == _end) {
       return false;
     }
 

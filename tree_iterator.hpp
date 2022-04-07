@@ -119,7 +119,7 @@ class const_tree_iterator : public iterator<ft::bidirectional_iterator_tag, T> {
 
   const_tree_iterator() : _ptr(NULL) {}
   const_tree_iterator(const node_ptr &ptr) : _ptr(ptr) {}
-  const_tree_iterator(const tree_iterator<T> &src) : _ptr(src._ptr) {}
+  const_tree_iterator(const tree_iterator<T> &src) : _ptr(src.base()) {}
   const_tree_iterator(const const_tree_iterator &src) : _ptr(src._ptr) {}
   ~const_tree_iterator() {}
 

@@ -25,7 +25,7 @@ class set {
   typedef typename allocator_type::const_reference const_reference;
   typedef typename allocator_type::pointer pointer;
   typedef typename allocator_type::const_pointer const_pointer;
-  typedef typename tree_type::iterator iterator;
+  typedef typename tree_type::const_iterator iterator;
   typedef typename tree_type::const_iterator const_iterator;
   typedef ft::reverse_iterator<iterator> reverse_iterator;
   typedef ft::reverse_iterator<const_iterator> const_reverse_iterator;
@@ -159,10 +159,8 @@ class set {
 
   allocator_type get_allocator() const { return _alloc; }
 
-  // TODO put back to private
-  red_black_tree<value_type, key_compare> _tree;
-
  private:
+  red_black_tree<value_type, key_compare> _tree;
   key_compare _comp;
   allocator_type _alloc;
 };
