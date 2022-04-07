@@ -17,6 +17,7 @@ class set {
  public:
   typedef T key_type;
   typedef T value_type;
+  typedef red_black_tree<value_type> tree_type;
   typedef Compare key_compare;
   typedef Compare value_compare;
   typedef Alloc allocator_type;
@@ -24,8 +25,8 @@ class set {
   typedef typename allocator_type::const_reference const_reference;
   typedef typename allocator_type::pointer pointer;
   typedef typename allocator_type::const_pointer const_pointer;
-  typedef tree_iterator<key_type> iterator;
-  typedef tree_iterator<const key_type> const_iterator;
+  typedef typename tree_type::iterator iterator;
+  typedef typename tree_type::const_iterator const_iterator;
   typedef ft::reverse_iterator<iterator> reverse_iterator;
   typedef ft::reverse_iterator<const_iterator> const_reverse_iterator;
   typedef
@@ -52,8 +53,15 @@ class set {
 
   iterator begin() { return _tree.begin(); }
   const_iterator begin() const { return _tree.begin(); }
+
   iterator end() { return _tree.end(); }
   const_iterator end() const { return _tree.end(); }
+
+  reverse_iterator rbegin() { return reverse_iterator(end()); }
+  const_reverse_iterator rbegin() const { return reverse_iterator(end()); }
+
+  reverse_iterator rend() { return reverse_iterator(begin()); }
+  const_reverse_iterator rend() const { return reverse_iterator(begin()); }
 
   set& operator=(const set& src) {
     if (this != &src) {
@@ -61,11 +69,34 @@ class set {
       _comp = src._comp;
       _alloc = src._alloc;
     }
+    return *this;
   }
 
   bool empty() const { return _tree.empty(); }
   size_type size() const { return _tree.size(); }
   size_type max_size() const { return _tree.max_size(); }
+
+  pair<iterator, bool> insert(const value_type& val) {
+    return (_tree.insert(val));
+  }
+
+  iterator insert(iterator position, const value_type& val) {
+    (void)position;
+    return (insert(val).first);
+  }
+
+  template <class InputIterator>
+  void insert(InputIterator first, InputIterator last) {
+    for (; first != last; first++) {
+      insert(*first);
+    }
+  }
+
+  void erase(iterator position) { _tree.deleteNode(*position); }
+  size_type erase(const value_type& val) {
+    _tree.deleteNode(val);
+    return 1;
+  }
 
  private:
   red_black_tree<value_type> _tree;

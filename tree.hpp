@@ -1,8 +1,8 @@
 #ifndef TREE_HPP
 #define TREE_HPP
 
-#include <iostream>
 #include <tree_iterator.hpp>
+#include <utils.hpp>
 
 namespace ft {
 
@@ -11,8 +11,8 @@ class red_black_tree {
  public:
   typedef Node<T> *node_ptr;
   typedef Node<T> node;
-  typedef tree_iterator<T> iterator;
-  typedef tree_iterator<const T> const_iterator;
+  typedef const_tree_iterator<T> iterator;
+  typedef const_tree_iterator<T> const_iterator;
   typedef T data_type;
 
  public:
@@ -28,12 +28,33 @@ class red_black_tree {
     _free_node(_end);
   }
 
+  red_black_tree &operator=(const red_black_tree &src) {
+    if (this != &src) {
+      clear();
+      const_iterator it = src.begin();
+      for (; it != src.end(); it++) {
+        insert(*it);
+      }
+    }
+    return *this;
+  }
+
   bool empty() const { return (_size == 0); }
   size_t size() const { return _size; }
   size_t max_size() const { return _alloc.max_size(); }
 
-  iterator begin() { return iterator(minimum(_root)); }
-  const_iterator begin() const { return const_iterator(minimum(_root)); }
+  iterator begin() {
+    if (!_root) {
+      return end();
+    }
+    return iterator(minimum(_root));
+  }
+  const_iterator begin() const {
+    if (!_root) {
+      return end();
+    }
+    return const_iterator(minimum(_root));
+  }
 
   iterator end() { return iterator(_end); }
   const_iterator end() const { return const_iterator(_end); }
@@ -86,7 +107,7 @@ class red_black_tree {
     x->parent = y;
   }
 
-  void insert(data_type key) {
+  pair<iterator, bool> insert(const data_type &key) {
     node_ptr node = _malloc_node(key, NULL, NULL, NULL, 1);
 
     node_ptr y = NULL;
@@ -99,7 +120,7 @@ class red_black_tree {
       } else if (node->data > x->data) {
         x = x->right;
       } else {
-        return;
+        return (pair<iterator, bool>(iterator(NULL), false));
       }
     }
 
@@ -119,14 +140,15 @@ class red_black_tree {
 
     if (node->parent == _end) {
       node->color = 0;
-      return;
+      return (pair<iterator, bool>(iterator(node), true));
     }
 
     if (node->parent->parent == _end) {
-      return;
+      return (pair<iterator, bool>(iterator(node), true));
     }
 
     insertFix(node);
+    return (pair<iterator, bool>(iterator(node), true));
   }
 
   node_ptr get_root() { return this->_root; }
@@ -243,7 +265,8 @@ class red_black_tree {
     }
     if (x) x->color = 0;
     _alloc.destroy(_end);
-    _alloc.construct(_end, node(maximum(_root)->data, _root, _root, _root, 0));
+    data_type data = (_root ? maximum(_root)->data : data_type());
+    _alloc.construct(_end, node(data, _root, _root, _root, 0));
   }
 
   void replace(node_ptr first, node_ptr second) {
@@ -271,12 +294,10 @@ class red_black_tree {
         z = node;
       }
 
-      if (node->data < key) {
+      if (node->data <= key) {
         node = node->right;
-      } else if (node->data > key) {
-        node = node->left;
       } else {
-        return;
+        node = node->left;
       }
     }
 
@@ -339,7 +360,7 @@ class red_black_tree {
       } else {
         u = k->parent->parent->right;
 
-        if (u->color == 1) {
+        if (u && u->color == 1) {
           u->color = 0;
           k->parent->color = 0;
           k->parent->parent->color = 1;
