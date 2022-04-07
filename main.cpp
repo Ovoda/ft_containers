@@ -43,7 +43,13 @@ void constructor_test(const typename NAMESPACE::set<T> &_s) {
 template <class T>
 void erase_test(typename NAMESPACE::set<T> &_s) {
   typename NAMESPACE::set<T>::iterator it = _s.begin();
-  _s.erase(1);
+  for (int i = 0; i < 3; i++) {
+    _s.erase(it++);
+  }
+  for (int i = 0; i < 10; i++) {
+    _s.erase(*it++);
+  }
+  _s.erase(_s.begin(), _s.end());
   print_set(_s);
 }
 
@@ -52,7 +58,7 @@ int main() {
   for (int i = 0; i <= 20; i++) {
     _s.insert(i - 10);
   }
-  // constructor_test();
+  // constructor_test(_s);
   erase_test(_s);
   return (0);
 }

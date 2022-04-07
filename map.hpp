@@ -133,6 +133,7 @@ class map {
       key_type _v = first->first;
       first++;
       _tree.delete_node(_v);
+      _tree.print();
     }
   }
 

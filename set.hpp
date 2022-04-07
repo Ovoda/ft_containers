@@ -94,12 +94,21 @@ class set {
 
   void erase(iterator position) { _tree.deleteNode(*position); }
   size_type erase(const value_type& val) {
-    _tree.deleteNode(val);
-    return 1;
+    if (_tree.deleteNode(val)) return 1;
+    return 0;
+  }
+  void erase(iterator first, iterator last) {
+    iterator tmp;
+    for (; first != last;) {
+      tmp = first;
+      first++;
+      erase(tmp);
+    }
   }
 
- private:
   red_black_tree<value_type> _tree;
+
+ private:
   key_compare _comp;
   allocator_type _alloc;
 };

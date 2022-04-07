@@ -153,7 +153,7 @@ class red_black_tree {
 
   node_ptr get_root() { return this->_root; }
 
-  void deleteNode(data_type data) { deleteNodeHelper(_root, data); }
+  bool deleteNode(data_type data) { return (deleteNodeHelper(_root, data)); }
 
   void print_helper(node_ptr curr, int space) {
     if (curr == NULL) return;
@@ -208,7 +208,7 @@ class red_black_tree {
 
   void deleteFix(node_ptr x) {
     node_ptr s;
-    while (x && x != _root && x->color == 0) {
+    while (x != _root && x->color == 0) {
       if (x == x->parent->left) {
         s = x->parent->right;
         if (s->color == 1) {
@@ -218,7 +218,8 @@ class red_black_tree {
           s = x->parent->right;
         }
 
-        if (s->left->color == 0 && s->right->color == 0) {
+        if ((s->left->color == 0 || !s->left) &&
+            (s->right->color == 0 || !s->right)) {
           s->color = 1;
           x = x->parent;
         } else {
@@ -244,7 +245,7 @@ class red_black_tree {
           s = x->parent->left;
         }
 
-        if (s->right->color == 0 && s->right->color == 0) {
+        if (!s->right || s->right->color == 0) {
           s->color = 1;
           x = x->parent;
         } else {
@@ -286,7 +287,7 @@ class red_black_tree {
     if (second) second->parent = first->parent;
   }
 
-  void deleteNodeHelper(node_ptr node, data_type key) {
+  bool deleteNodeHelper(node_ptr node, data_type key) {
     node_ptr z = NULL;
     node_ptr x, y;
     while (node != NULL) {
@@ -303,7 +304,7 @@ class red_black_tree {
 
     if (z == NULL) {
       std::cout << "Key not found in the tree" << std::endl;
-      return;
+      return false;
     }
 
     _size--;
@@ -333,9 +334,10 @@ class red_black_tree {
       y->color = z->color;
     }
     _free_node(z);
-    if (y_original_color == 0) {
+    if (x && y_original_color == 0) {
       deleteFix(x);
     }
+    return true;
   }
 
   void insertFix(node_ptr k) {
