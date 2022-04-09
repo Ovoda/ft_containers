@@ -325,7 +325,6 @@ class red_black_tree {
   }
 
   bool deleteNodeHelper(node_ptr node, data_type key) {
-    // TODO are we sure about this ?
     node_ptr z = searchTreeHelper(node, key);
     node_ptr x, y;
 
