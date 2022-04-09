@@ -226,11 +226,12 @@ class vector {
       }
     }
 
-    for (int i = _size - 1; i >= index; i--) {
-      _alloc.construct(_array + i + n, _array[i]);
-      _alloc.destroy(_array + i);
-    }
-
+iterator	_it = end();
+				for (; _it != begin() + index; _it--)
+				{
+					_alloc.construct(&(*_it), *(_it - 1));
+					_alloc.destroy(&(*(_it - 1)));
+				}
     for (size_t i = index; i < index + n; i++, first++) {
       _alloc.construct(_array + i, *first);
     }
