@@ -226,12 +226,6 @@ class vector {
       }
     }
 
-iterator	_it = end();
-				for (; _it != begin() + index; _it--)
-				{
-					_alloc.construct(&(*_it), *(_it - 1));
-					_alloc.destroy(&(*(_it - 1)));
-				}
     for (size_t i = index; i < index + n; i++, first++) {
       _alloc.construct(_array + i, *first);
     }
@@ -243,14 +237,16 @@ iterator	_it = end();
   iterator erase(iterator first, iterator last) {
     size_t diff = last - first;
     size_t i = first - _array;
-    for (; i < _size - diff; i++) {
-      _alloc.destroy(_array + i);
-      _alloc.construct(_array + i, _array[i + diff]);
-    }
-    for (; i < _size; i++) {
-      _alloc.destroy(_array + i);
-    }
-    _size -= diff;
+    if (diff > 0) {
+      for (; i < _size - diff; i++) {
+        _alloc.destroy(_array + i);
+        _alloc.construct(_array + i, _array[i + diff]);
+      }
+      for (; i < _size; i++) {
+        _alloc.destroy(_array + i);
+      }
+      _size -= diff;
+      }
     return iterator(first);
   }
 
