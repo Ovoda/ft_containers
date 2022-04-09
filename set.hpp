@@ -204,5 +204,11 @@ bool operator>=(const ft::set<Key, Compare, Alloc>& lhs,
   return !(rhs > lhs);
 }
 
+template <class Key, class Compare, class Alloc>
+void swap(ft::set<Key, Compare, Alloc>& lhs,
+          ft::set<Key, Compare, Alloc>& rhs) {
+  lhs.swap(rhs);
+}
+
 }  // namespace ft
 #endif

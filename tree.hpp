@@ -329,7 +329,7 @@ class red_black_tree {
     node_ptr z = searchTreeHelper(node, key);
     node_ptr x, y;
 
-    if (z == _end) {
+    if (z == _end || z == NULL) {
       return false;
     }
 
