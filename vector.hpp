@@ -90,21 +90,6 @@ class vector {
       }
     } else if (n > _size) {
       insert(end(), n - _size, val);
-      // if (n > _capacity) {
-      //   if (_capacity * 2 > n) {
-      //     reserve(_capacity * 2);
-      //   } else {
-      //     reserve(n);
-      //   }
-      //   while (_size < n) {
-      //     std::cout << "here" << std::endl;
-      //     _alloc.construct(&_array[_size++], val);
-      //   }
-      // } else {
-      //   while (_size < n) {
-      //     _alloc.construct(&_array[_size++], val);
-      //   }
-      // }
     }
   }
 
@@ -226,6 +211,11 @@ class vector {
       }
     }
 
+    for (int i = _size - 1; i >= index; i--) {
+      _alloc.construct(_array + i + n, _array[i]);
+      _alloc.destroy(_array + i);
+    }
+
     for (size_t i = index; i < index + n; i++, first++) {
       _alloc.construct(_array + i, *first);
     }
@@ -246,7 +236,7 @@ class vector {
         _alloc.destroy(_array + i);
       }
       _size -= diff;
-      }
+    }
     return iterator(first);
   }
 
