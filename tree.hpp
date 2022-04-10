@@ -8,7 +8,7 @@
 
 namespace ft {
 
-template <class T, class Compare = less<T> >
+template <class T, class Compare = ft::less<T> >
 class red_black_tree {
  public:
   typedef Node<T> *node_ptr;

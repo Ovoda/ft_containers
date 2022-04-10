@@ -61,13 +61,13 @@ class map {
  public:
   explicit map(const key_compare& comp = key_compare(),
                const allocator_type& alloc = allocator_type())
-      : _tree(tree_type(value_compare())), _key_comp(comp), _alloc(alloc) {}
+      : _tree(tree_type(value_compare(comp))), _key_comp(comp), _alloc(alloc) {}
 
   template <class InputIterator>
   map(InputIterator first, InputIterator last,
       const key_compare& comp = key_compare(),
       const allocator_type& alloc = allocator_type())
-      : _tree(tree_type(value_compare())), _key_comp(comp), _alloc(alloc) {
+      : _tree(tree_type(value_compare(comp))), _key_comp(comp), _alloc(alloc) {
     for (; first != last; first++) {
       insert(*first);
     }
